@@ -151,27 +151,27 @@ export default function Navbar() {
     <div className={`fixed left-0 w-full z-50 flex flex-col items-center px-4 transition-all duration-500 ease-in-out ${
       isScrolled ? "top-4 md:top-8" : "top-8"
     }`}>
-      <nav 
+      <nav
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="relative flex flex-col md:flex-row items-center gap-2 md:gap-4 p-2 group/nav"
+        className="relative flex flex-col md:flex-row items-center gap-2 md:gap-0 p-2 group/nav"
       >
         {/* Glow Background for the entire nav group */}
-        <div 
+        <div
           className="absolute inset-0 bg-black/5 backdrop-blur-md border border-black/5 rounded-sm -z-10 opacity-0 transition-opacity duration-500"
         />
 
         {/* Menus Block - Top on mobile, Center on desktop */}
         <div className={`order-1 md:order-2 transition-all duration-500 ease-in-out overflow-hidden ${
           isScrolled 
-            ? "max-h-0 opacity-0 -translate-y-4 pointer-events-none md:max-h-20 md:opacity-100 md:translate-y-0 md:pointer-events-auto" 
-            : "max-h-20 opacity-100 translate-y-0"
+            ? "max-h-0 opacity-0 -translate-y-4 pointer-events-none md:max-h-20 md:max-w-0 md:opacity-0 md:translate-y-0 md:mx-0" 
+            : "max-h-20 opacity-100 translate-y-0 md:max-w-[600px] md:opacity-100 md:mx-2"
         }`}>
-          <GlowBlock 
-            mousePos={mousePos} 
-            isHovered={isHovered} 
-            containerHovered={isHovered} 
+          <GlowBlock
+            mousePos={mousePos}
+            isHovered={isHovered}
+            containerHovered={isHovered}
             shape="pill"
             glowColor={currentGlowColor}
             className="px-4"
@@ -204,7 +204,7 @@ export default function Navbar() {
         {/* Container for Studio and Icon on mobile to be side-by-side */}
         <div className="order-2 flex items-center gap-2 md:gap-4 md:contents">
           {/* Studio Name Block */}
-          <div className="md:order-1">
+          <div className="md:order-1 md:mr-2">
             <GlowBlock 
               mousePos={mousePos} 
               isHovered={isHovered} 
@@ -220,12 +220,12 @@ export default function Navbar() {
           </div>
 
           {/* 9-Dot Icon Block */}
-          <div className="md:order-3">
-            <GlowBlock 
-              mousePos={mousePos} 
-              isHovered={isHovered} 
-              containerHovered={isHovered} 
-              shape="circle" 
+          <div className="md:order-3 md:ml-2">
+            <GlowBlock
+              mousePos={mousePos}
+              isHovered={isHovered}
+              containerHovered={isHovered}
+              shape="circle"
               glowColor={currentGlowColor}
             >
               <div className="grid grid-cols-3 gap-1 group/dots transition-transform duration-500 ease-in-out group-hover:rotate-180">
