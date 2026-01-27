@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useRef, useState, useEffect } from "react";
 
 interface GlowBlockProps {
@@ -74,6 +75,7 @@ const GlowBlock = ({
 };
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
@@ -98,36 +100,45 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -70% 0px',
-      threshold: 0,
-    };
+    // If we're not on the home page, set active section based on pathname
+    if (pathname !== "/") {
+      if (pathname.includes("/work")) setActiveSection("featured-work");
+      else if (pathname.includes("/about")) setActiveSection("introduction");
+      else if (pathname.includes("/services")) setActiveSection("services");
+      else if (pathname.includes("/contact")) setActiveSection("contact");
+      else if (pathname.includes("/testimonials")) setActiveSection("testimonials");
+    } else {
+      const observerOptions = {
+        root: null,
+        rootMargin: '-20% 0px -70% 0px',
+        threshold: 0,
+      };
 
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
+      const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(handleIntersect, observerOptions);
+      const sections = ["hero", "featured-work", "introduction", "services", "testimonials", "contact"];
+      
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
       });
-    };
 
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
-    const sections = ["hero", "featured-work", "introduction", "services", "testimonials", "contact"];
-    
-    sections.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
+      return () => observer.disconnect();
+    }
+  }, [pathname]);
 
   const navLinks = [
-    { name: "Work", href: "#featured-work" },
-    { name: "About", href: "#introduction" },
-    { name: "Services", href: "#services" },
-    { name: "Contact", href: "#contact" },
+    { name: "Work", href: "/work" },
+    { name: "About", href: "/about" },
+    { name: "Services", href: "/services" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const handleMouseMove = (e: React.MouseEvent) => {
