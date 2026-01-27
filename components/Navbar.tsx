@@ -15,12 +15,12 @@ interface GlowBlockProps {
   onClick?: () => void;
 }
 
-const GlowBlock = ({ 
-  children, 
-  className = "", 
-  mousePos, 
-  isHovered, 
-  containerHovered, 
+const GlowBlock = ({
+  children,
+  className = "",
+  mousePos,
+  isHovered,
+  containerHovered,
   shape = "square",
   glowColor = "rgba(34, 197, 94, 0.8), rgba(59, 130, 246, 0.8)",
   onClick
@@ -124,7 +124,7 @@ export default function Navbar() {
 
       const observer = new IntersectionObserver(handleIntersect, observerOptions);
       const sections = ["hero", "featured-work", "introduction", "services", "testimonials", "contact"];
-      
+
       sections.forEach((id) => {
         const el = document.getElementById(id);
         if (el) observer.observe(el);
@@ -148,9 +148,8 @@ export default function Navbar() {
   const currentGlowColor = sectionColors[activeSection] || sectionColors.hero;
 
   return (
-    <div className={`fixed left-0 w-full z-50 flex flex-col items-center px-4 transition-all duration-500 ease-in-out ${
-      isScrolled ? "top-4 md:top-8" : "top-8"
-    }`}>
+    <div className={`fixed left-0 w-full z-50 flex flex-col items-center px-4 transition-all duration-500 ease-in-out ${isScrolled ? "top-4 md:top-8" : "top-8"
+      }`}>
       <nav
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
@@ -163,11 +162,10 @@ export default function Navbar() {
         />
 
         {/* Menus Block - Top on mobile, Center on desktop */}
-        <div className={`order-1 md:order-2 transition-all duration-500 ease-in-out overflow-hidden ${
-          isScrolled 
-            ? "max-h-0 opacity-0 -translate-y-4 pointer-events-none md:max-h-20 md:max-w-0 md:opacity-0 md:translate-y-0 md:mx-0" 
+        <div className={`order-1 md:order-2 transition-all duration-500 ease-in-out overflow-hidden ${isScrolled
+            ? "max-h-0 opacity-0 -translate-y-4 pointer-events-none md:max-h-20 md:max-w-0 md:opacity-0 md:translate-y-0 md:mx-0"
             : "max-h-20 opacity-100 translate-y-0 md:max-w-[600px] md:opacity-100 md:mx-2"
-        }`}>
+          }`}>
           <GlowBlock
             mousePos={mousePos}
             isHovered={isHovered}
@@ -205,10 +203,10 @@ export default function Navbar() {
         <div className="order-2 flex items-center gap-2 md:gap-4 md:contents">
           {/* Studio Name Block */}
           <div className="md:order-1 md:mr-2">
-            <GlowBlock 
-              mousePos={mousePos} 
-              isHovered={isHovered} 
-              containerHovered={isHovered} 
+            <GlowBlock
+              mousePos={mousePos}
+              isHovered={isHovered}
+              containerHovered={isHovered}
               shape="asymmetric"
               glowColor={currentGlowColor}
               className="px-4 md:px-6"
@@ -228,13 +226,31 @@ export default function Navbar() {
               shape="circle"
               glowColor={currentGlowColor}
             >
-              <div className="grid grid-cols-3 gap-1 group/dots transition-transform duration-500 ease-in-out group-hover:rotate-180">
-                {[...Array(9)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-1 h-1 bg-current rounded-full transition-transform"
-                  />
-                ))}
+              <div className="grid grid-cols-3 gap-1 group/dots">
+                {[...Array(9)].map((_, i) => {
+                  let hoverClass = "";
+                  // Center dot (4) stays put
+                  if (i === 4) hoverClass = "";
+
+                  // Orthogonal dots (1, 3, 5, 7) move 8px further out
+                  else if (i === 1) hoverClass = "group-hover:translate-y-[-8px]"; // Top
+                  else if (i === 7) hoverClass = "group-hover:translate-y-[8px]"; // Bottom
+                  else if (i === 3) hoverClass = "group-hover:translate-x-[-8px]"; // Left
+                  else if (i === 5) hoverClass = "group-hover:translate-x-[8px]"; // Right
+
+                  // Diagonal dots (0, 2, 6, 8) move ~3.31px further out
+                  else if (i === 0) hoverClass = "group-hover:translate-x-[-3.31px] group-hover:translate-y-[-3.31px]"; // Top-Left
+                  else if (i === 2) hoverClass = "group-hover:translate-x-[3.31px] group-hover:translate-y-[-3.31px]"; // Top-Right
+                  else if (i === 6) hoverClass = "group-hover:translate-x-[-3.31px] group-hover:translate-y-[3.31px]"; // Bottom-Left
+                  else if (i === 8) hoverClass = "group-hover:translate-x-[3.31px] group-hover:translate-y-[3.31px]"; // Bottom-Right
+
+                  return (
+                    <div
+                      key={i}
+                      className={`w-1 h-1 bg-current rounded-full transition-transform duration-500 ease-in-out ${hoverClass}`}
+                    />
+                  );
+                })}
               </div>
             </GlowBlock>
           </div>
