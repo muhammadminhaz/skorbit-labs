@@ -233,16 +233,16 @@ export default function Navbar() {
                   if (i === 4) hoverClass = "";
 
                   // Orthogonal dots (1, 3, 5, 7) move 8px further out
-                  else if (i === 1) hoverClass = "group-hover:translate-y-[-8px]"; // Top
-                  else if (i === 7) hoverClass = "group-hover:translate-y-[8px]"; // Bottom
-                  else if (i === 3) hoverClass = "group-hover:translate-x-[-8px]"; // Left
-                  else if (i === 5) hoverClass = "group-hover:translate-x-[8px]"; // Right
+                  else if (i === 1) hoverClass = "group-hover:translate-y-[-6px]";
+                  else if (i === 7) hoverClass = "group-hover:translate-y-[6px]";
+                  else if (i === 3) hoverClass = "group-hover:translate-x-[-6px]";
+                  else if (i === 5) hoverClass = "group-hover:translate-x-[6px]";
 
                   // Diagonal dots (0, 2, 6, 8) move ~3.31px further out
-                  else if (i === 0) hoverClass = "group-hover:translate-x-[-3.31px] group-hover:translate-y-[-3.31px]"; // Top-Left
-                  else if (i === 2) hoverClass = "group-hover:translate-x-[3.31px] group-hover:translate-y-[-3.31px]"; // Top-Right
-                  else if (i === 6) hoverClass = "group-hover:translate-x-[-3.31px] group-hover:translate-y-[3.31px]"; // Bottom-Left
-                  else if (i === 8) hoverClass = "group-hover:translate-x-[3.31px] group-hover:translate-y-[3.31px]"; // Bottom-Right
+                  else if (i === 0) hoverClass = "group-hover:translate-x-[-2.5px] group-hover:translate-y-[-2.5px]";
+                  else if (i === 2) hoverClass = "group-hover:translate-x-[2.5px] group-hover:translate-y-[-2.5px]";
+                  else if (i === 6) hoverClass = "group-hover:translate-x-[-2.5px] group-hover:translate-y-[2.5px]";
+                  else if (i === 8) hoverClass = "group-hover:translate-x-[2.5px] group-hover:translate-y-[2.5px]";
 
                   return (
                     <div
