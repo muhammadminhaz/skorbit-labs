@@ -29,10 +29,10 @@ const GlowBlock = ({
   const [localMousePos, setLocalMousePos] = useState({ x: -1000, y: -1000 });
 
   const shapeStyles = {
-    square: "rounded-sm",
-    pill: "rounded-full",
-    asymmetric: "rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-sm rounded-bl-sm",
-    circle: "rounded-full aspect-square !px-0",
+    square: "rounded-sm px-6",
+    pill: "rounded-full px-6",
+    asymmetric: "rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-sm rounded-bl-sm px-6",
+    circle: "rounded-full aspect-square px-2 shrink-0",
   };
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const GlowBlock = ({
     <div
       ref={blockRef}
       onClick={onClick}
-      className={`relative group bg-black/5 backdrop-blur-md border border-black/10 flex items-center justify-center transition-[background-color,border-color,transform] duration-200 whitespace-nowrap overflow-hidden px-6 h-14 ${shapeStyles[shape]} ${className}`}
+      className={`relative group bg-black/5 backdrop-blur-md border border-black/10 flex items-center justify-center transition-[background-color,border-color,transform] duration-200 whitespace-nowrap overflow-hidden h-14 ${shapeStyles[shape]} ${className}`}
     >
       {/* Border Glow Effect */}
       <div
