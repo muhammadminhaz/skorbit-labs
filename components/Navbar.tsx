@@ -212,7 +212,7 @@ export default function Navbar() {
               className="px-4 md:px-6"
             >
               <Link href="/" className="font-bold text-base md:text-lg tracking-tight">
-                hrts.studio
+                Skorbit Labs
               </Link>
             </GlowBlock>
           </div>

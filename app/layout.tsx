@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "hrts.studio",
+  title: "Skorbit Labs",
   description: "A people first digital studio",
 };
 

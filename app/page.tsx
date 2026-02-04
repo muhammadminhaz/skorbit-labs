@@ -1,27 +1,25 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/sections/Hero";
-import FeaturedWork from "@/components/sections/FeaturedWork";
-import Introduction from "@/components/sections/Introduction";
+import Philosophy from "@/components/sections/Philosophy";
 import Services from "@/components/sections/Services";
-import Testimonials from "@/components/sections/Testimonials";
-import Contact from "@/components/sections/Contact";
+import Story from "@/components/sections/Story";
+import Process from "@/components/sections/Process";
+import WhySkorbit from "@/components/sections/WhySkorbit";
+import CTA from "@/components/sections/CTA";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
   return (
-    <main className="bg-[#fdfdfc] text-neutral-900 selection:bg-neutral-900 selection:text-white">
+    <main className="bg-white text-slate-800 selection:bg-sky-100 selection:text-slate-900">
       <Navbar />
-
       <Hero />
-      <FeaturedWork />
-      <Introduction />
+      <Philosophy />
       <Services />
-      <Testimonials />
-
-      <div className="min-h-screen flex flex-col">
-        <Contact />
-        <Footer />
-      </div>
+      <Story />
+      <Process />
+      <WhySkorbit />
+      <CTA />
+      <Footer />
     </main>
   );
 }
