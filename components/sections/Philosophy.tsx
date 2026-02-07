@@ -28,7 +28,7 @@ export default function Philosophy() {
     gsap.set(box2, { x: "50vw", yPercent: -80, xPercent: 50 });
 
     const ctx = gsap.context(() => {
-      const pinDistance = 1500; // Increased from 1000 to keep boxes moving longer while pinned
+      const pinDistance = 2500; // Increased from 1000 to keep boxes moving longer while pinned
       const totalDistance = 4000; // Increased from 3000 to match the scale
 
       // 1. Pinning Logic
