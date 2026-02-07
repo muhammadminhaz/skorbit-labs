@@ -45,40 +45,48 @@ export default function Philosophy() {
       ease: "power2.out",
     });
 
-    // 2. Pinned Animation (Boxes Crossing & Text Exit)
-    const pinnedTl = gsap.timeline({
+    // 2. Main Animation (Boxes Crossing & Text Exit)
+    // This timeline handles the movement and fading, driven by a long scroll distance
+    const mainTl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: "+=800",
+        end: "+=3000", // Total distance for the boxes to move off-screen
         scrub: true,
-        pin: true,
-        pinSpacing: true,
       },
     });
 
-    pinnedTl
-      // Boxes enter and cross
+    // Boxes animation
+    // They cross at 1/3 of the timeline (corresponding to the pin duration)
+    mainTl
       .to(box1, {
-        x: "10vw", // Cross center to right
-        xPercent: 0, // Reset offset
-        duration: 1,
+        x: "100vw", // Move fully across to right
+        duration: 3,
         ease: "none",
-      })
+      }, 0)
       .to(box2, {
-        x: "-10vw", // Cross center to left
-        xPercent: 0,
-        duration: 1,
+        x: "-100vw", // Move fully across to left
+        duration: 3,
         ease: "none",
-      }, "<")
+      }, 0)
       
-      // Text fades out as they cross
+      // Text fades out starting when they cross (at 1/3 of duration)
       .to(text, {
         opacity: 0,
         filter: "blur(20px)",
         scale: 1.1,
-        duration: 0.25,
-      }, 0.7);
+        duration: 1,
+      }, 1);
+
+    // 3. Pinning Logic
+    // Pin the section only until the boxes cross (1/3 of the total animation)
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: "+=1000", // Matches the crossing point (1/3 of 3000)
+      pin: true,
+      pinSpacing: true,
+    });
 
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
