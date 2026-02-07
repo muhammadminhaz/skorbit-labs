@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export default function Philosophy() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -12,7 +14,7 @@ export default function Philosophy() {
   const box1Ref = useRef<HTMLDivElement>(null);
   const box2Ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current;
     const text = textRef.current;
     const box1 = box1Ref.current;
@@ -22,75 +24,76 @@ export default function Philosophy() {
 
     // Initial state
     gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
-
-    // Start with boxes just touching the edges of the screen
-    // Box 1 (Left): Right edge at left screen edge
     gsap.set(box1, { x: "-50vw", yPercent: 20, xPercent: -50 });
-
-    // Box 2 (Right): Left edge at right screen edge
     gsap.set(box2, { x: "50vw", yPercent: -80, xPercent: 50 });
 
-    // 1. Pre-Pin Animation (Text Only)
-    // Text starts appearing when section is halfway up
-    gsap.to(text, {
-      scrollTrigger: {
-        trigger: section,
-        start: "top 50%", 
-        end: "top top",
-        scrub: true,
-      },
-      opacity: 1,
-      filter: "blur(0px)",
-      scale: 1,
-      ease: "power2.out",
-    });
+    const ctx = gsap.context(() => {
+      const pinDistance = 1500; // Increased from 1000 to keep boxes moving longer while pinned
+      const totalDistance = 4000; // Increased from 3000 to match the scale
 
-    // 2. Main Animation (Boxes Crossing & Text Exit)
-    // This timeline handles the movement and fading, driven by a long scroll distance
-    const mainTl = gsap.timeline({
-      scrollTrigger: {
+      // 1. Pinning Logic
+      ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: "+=3000", // Total distance for the boxes to move off-screen
+        end: `+=${pinDistance}`,
+        pin: true,
+        pinSpacing: true,
         scrub: true,
-      },
-    });
+      });
 
-    // Boxes animation
-    // They cross at 1/3 of the timeline (corresponding to the pin duration)
-    mainTl
-      .to(box1, {
-        x: "100vw", // Move fully across to right
-        duration: 3,
-        ease: "none",
-      }, 0)
-      .to(box2, {
-        x: "-100vw", // Move fully across to left
-        duration: 3,
-        ease: "none",
-      }, 0)
-      
-      // Text fades out starting when they cross (at 1/3 of duration)
-      .to(text, {
+      // 2. Pre-Pin Animation (Text Appearing)
+      gsap.to(text, {
+        scrollTrigger: {
+          trigger: section,
+          start: "top 60%",
+          end: "top top",
+          scrub: true,
+        },
+        opacity: 1,
+        filter: "blur(0px)",
+        scale: 1,
+        ease: "power2.out",
+      });
+
+      // 3. Main Animation (Boxes Crossing & Text Exit)
+      const mainTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: `+=${totalDistance}`, 
+          scrub: true,
+        },
+      });
+
+      const boxDuration = 3;
+
+      mainTl
+        // Boxes move from edges to opposite sides
+        .to(box1, {
+          x: "100vw", 
+          duration: boxDuration,
+          ease: "none",
+        }, 0)
+        .to(box2, {
+          x: "-100vw", 
+          duration: boxDuration,
+          ease: "none",
+        }, 0);
+        
+      // Text fades out starting exactly when the pin ends
+      // Calculate the time in the timeline corresponding to the pin end
+      const fadeStartTime = (pinDistance / totalDistance) * boxDuration;
+
+      mainTl.to(text, {
         opacity: 0,
         filter: "blur(20px)",
         scale: 1.1,
         duration: 1,
-      }, 1);
+      }, fadeStartTime);
 
-    // 3. Pinning Logic
-    // Pin the section only until the boxes cross (1/3 of the total animation)
-    ScrollTrigger.create({
-      trigger: section,
-      start: "top top",
-      end: "+=1000", // Matches the crossing point (1/3 of 3000)
-      pin: true,
-      pinSpacing: true,
-    });
+    }, sectionRef);
 
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
