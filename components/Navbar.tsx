@@ -54,7 +54,7 @@ const GlowBlock = ({
     <div
       ref={blockRef}
       onClick={onClick}
-      className={`relative group bg-black/5 backdrop-blur-md border border-black/10 flex items-center justify-center transition-[background-color,border-color,transform] duration-200 whitespace-nowrap overflow-hidden h-14 ${shapeStyles[shape]} ${className}`}
+      className={`relative group bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center transition-[background-color,border-color,transform] duration-200 whitespace-nowrap overflow-hidden h-14 ${shapeStyles[shape]} ${className}`}
     >
       {/* Border Glow Effect */}
       <div
@@ -69,7 +69,7 @@ const GlowBlock = ({
         }}
       />
 
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-10 text-white">{children}</div>
     </div>
   );
 };
@@ -158,7 +158,7 @@ export default function Navbar() {
       >
         {/* Glow Background for the entire nav group */}
         <div
-          className="absolute inset-0 bg-black/5 backdrop-blur-md border border-black/5 rounded-sm -z-10 opacity-0 transition-opacity duration-500"
+          className="absolute inset-0 bg-white/5 backdrop-blur-md border border-white/5 rounded-sm -z-10 opacity-0 transition-opacity duration-500"
         />
 
         {/* Menus Block - Top on mobile, Center on desktop */}
@@ -182,16 +182,16 @@ export default function Navbar() {
                       href={link.href}
                       className="text-sm font-medium transition-transform duration-500 ease-in-out flex flex-col h-full"
                     >
-                      <span className="flex items-center h-full group-hover/link:-translate-y-full transition-transform duration-500 ease-in-out">
+                      <span className="flex items-center h-full group-hover/link:-translate-y-full transition-transform duration-500 ease-in-out text-white">
                         {link.name}
                       </span>
-                      <span className="flex items-center h-full group-hover/link:-translate-y-full transition-transform duration-500 ease-in-out text-black/60">
+                      <span className="flex items-center h-full group-hover/link:-translate-y-full transition-transform duration-500 ease-in-out text-white/60">
                         {link.name}
                       </span>
                     </Link>
                   </li>
                   {index < navLinks.length - 1 && (
-                    <span className="mx-2 md:mx-3 text-black/20 text-xs font-light">|</span>
+                    <span className="mx-2 md:mx-3 text-white/20 text-xs font-light">|</span>
                   )}
                 </React.Fragment>
               ))}
@@ -211,7 +211,7 @@ export default function Navbar() {
               glowColor={currentGlowColor}
               className="px-4 md:px-6"
             >
-              <Link href="/" className="font-bold text-base md:text-lg tracking-tight">
+              <Link href="/" className="font-bold text-base md:text-lg tracking-tight text-white">
                 Skorbit Labs
               </Link>
             </GlowBlock>
@@ -247,7 +247,7 @@ export default function Navbar() {
                   return (
                     <div
                       key={i}
-                      className={`w-1 h-1 bg-current rounded-full transition-transform duration-500 ease-in-out ${hoverClass}`}
+                      className={`w-1 h-1 bg-current rounded-full transition-transform duration-500 ease-in-out ${hoverClass} text-white`}
                     />
                   );
                 })}
