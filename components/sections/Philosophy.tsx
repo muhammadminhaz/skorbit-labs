@@ -20,57 +20,65 @@ export default function Philosophy() {
 
     if (!section || !text || !box1 || !box2) return;
 
-    const tl = gsap.timeline({
+    // Initial state
+    gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
+
+    // Start with boxes just touching the edges of the screen
+    // Box 1 (Left): Right edge at left screen edge
+    gsap.set(box1, { x: "-50vw", yPercent: 20, xPercent: -50 });
+
+    // Box 2 (Right): Left edge at right screen edge
+    gsap.set(box2, { x: "50vw", yPercent: -80, xPercent: 50 });
+
+    // 1. Pre-Pin Animation (Text Only)
+    // Text starts appearing when section is halfway up
+    gsap.to(text, {
+      scrollTrigger: {
+        trigger: section,
+        start: "top 50%", 
+        end: "top top",
+        scrub: true,
+      },
+      opacity: 1,
+      filter: "blur(0px)",
+      scale: 1,
+      ease: "power2.out",
+    });
+
+    // 2. Pinned Animation (Boxes Crossing & Text Exit)
+    const pinnedTl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: "+=2500", // Adjust length of scroll
-        scrub: 1,
+        end: "+=800",
+        scrub: true,
         pin: true,
         pinSpacing: true,
       },
     });
 
-    // Initial state
-    // Text starts blurred and invisible
-    gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
-    
-    // Boxes start off-screen (centered in CSS, offset by x)
-    gsap.set(box1, { x: "-120vw" }); 
-    gsap.set(box2, { x: "120vw" });
-
-    // Animation Sequence
-    tl
-      // 1. Text blurs in
-      .to(text, {
-        opacity: 1,
-        filter: "blur(0px)",
-        scale: 1,
-        duration: 2,
-        ease: "power2.out",
-      })
-      // 2. Boxes move across the screen
-      // Box 1 moves from Left (-120vw) to Right (120vw)
+    pinnedTl
+      // Boxes enter and cross
       .to(box1, {
-        x: "120vw",
-        duration: 6,
-        ease: "none", // Linear movement for smooth crossing
-      }, "-=1") // Start slightly before text finishes appearing
-      
-      // Box 2 moves from Right (120vw) to Left (-120vw)
-      .to(box2, {
-        x: "-120vw",
-        duration: 6,
+        x: "10vw", // Cross center to right
+        xPercent: 0, // Reset offset
+        duration: 1,
         ease: "none",
-      }, "<") // Start at same time as Box 1
+      })
+      .to(box2, {
+        x: "-10vw", // Cross center to left
+        xPercent: 0,
+        duration: 1,
+        ease: "none",
+      }, "<")
       
-      // 3. Text blurs out at the end
+      // Text fades out as they cross
       .to(text, {
         opacity: 0,
         filter: "blur(20px)",
         scale: 1.1,
-        duration: 2,
-      }, "-=2"); // Start fading out as boxes are leaving
+        duration: 0.25,
+      }, 0.7);
 
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
