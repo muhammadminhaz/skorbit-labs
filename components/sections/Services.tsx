@@ -2,7 +2,7 @@
 
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, Minus } from "lucide-react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -71,9 +71,8 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
 
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="flex items-start justify-between gap-8">
-            {/* ID & Content */}
-            <div className="flex items-start gap-8 md:gap-16 flex-1">
-                <span className="text-neutral-500 font-mono text-lg md:text-xl pt-2">{service.id}</span>
+            {/* Content */}
+            <div className="flex items-start flex-1">
                 <div className="flex flex-col gap-4 w-full max-w-3xl">
                     <motion.h3
                         className="text-3xl md:text-5xl lg:text-6xl font-bold"
@@ -111,9 +110,17 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
                         }}
                         className="overflow-hidden"
                     >
-                        <p className="text-lg text-neutral-300 leading-relaxed pt-2 font-medium">
+                        <motion.p 
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ 
+                                y: isHovered ? 0 : 20,
+                                opacity: isHovered ? 1 : 0
+                            }}
+                            transition={{ duration: 0.4, delay: 0.1 }}
+                            className="text-lg text-neutral-300 leading-relaxed pt-2 font-medium"
+                        >
                             {service.description}
-                        </p>
+                        </motion.p>
                     </motion.div>
                 </div>
             </div>
@@ -125,6 +132,105 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
                 className="p-2 rounded-full border border-neutral-700 text-white group-hover:border-sky-400 group-hover:text-sky-400 transition-colors mt-2 shrink-0 bg-black/20 backdrop-blur-sm"
             >
                 <ArrowRight className="w-6 h-6" />
+            </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DiscoverItem() {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group relative border-t border-neutral-800 cursor-pointer overflow-hidden"
+    >
+      {/* Background Image */}
+      <motion.div
+          className="absolute inset-0 z-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+      >
+          <img 
+              src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2670&auto=format&fit=crop"
+              alt="Discover"
+              className="w-full h-full object-cover"
+          />
+          {/* Dark Overlay for Readability */}
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
+      </motion.div>
+
+      <div className="container mx-auto px-4 py-12 relative z-10">
+        <div className="flex items-start justify-between gap-8">
+            {/* Content */}
+            <div className="flex items-start flex-1">
+                <div className="flex flex-col gap-4 w-full max-w-3xl">
+                    <motion.h3
+                        className="text-3xl md:text-5xl lg:text-6xl font-bold"
+                        animate={isHovered ? {
+                            backgroundImage: "linear-gradient(90deg, #3b82f6, #7dd3fc, #3b82f6)",
+                            backgroundClip: "text",
+                            WebkitBackgroundClip: "text",
+                            color: "transparent",
+                            backgroundPosition: ["0%", "200%"]
+                        } : {
+                            backgroundImage: "linear-gradient(90deg, #ffffff, #ffffff, #ffffff)",
+                            backgroundClip: "text",
+                            WebkitBackgroundClip: "text",
+                            color: "#ffffff",
+                            backgroundPosition: "0%"
+                        }}
+                        transition={{
+                            backgroundPosition: {
+                                duration: 3,
+                                repeat: Infinity,
+                                ease: "linear"
+                            },
+                            color: { duration: 0.2 }
+                        }}
+                    >
+                        Discover all capabilities
+                    </motion.h3>
+                    
+                    {/* Button - Directly under header */}
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ 
+                            height: isHovered ? "auto" : 0,
+                            opacity: isHovered ? 1 : 0
+                        }}
+                        className="overflow-hidden"
+                    >
+                        <motion.div 
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ 
+                                y: isHovered ? 0 : 20,
+                                opacity: isHovered ? 1 : 0
+                            }}
+                            transition={{ duration: 0.4, delay: 0.1 }}
+                            className="pt-6"
+                        >
+                            <Link href="/services">
+                                <button className="group/btn relative overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-colors">
+                                    <span className="relative z-10 transition-colors duration-300 group-hover/btn:text-white">What we do</span>
+                                    <div className="absolute inset-0 -translate-x-full bg-sky-400 transition-transform duration-300 group-hover/btn:translate-x-0" />
+                                </button>
+                            </Link>
+                        </motion.div>
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* Icon */}
+            <motion.div
+                className="p-2 rounded-full border border-neutral-700 text-white group-hover:border-sky-400 group-hover:text-sky-400 transition-colors mt-2 shrink-0 bg-black/20 backdrop-blur-sm relative w-10 h-10 flex items-center justify-center"
+            >
+                <Plus className={`w-6 h-6 absolute transition-all duration-300 ${isHovered ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`} />
+                <Minus className={`w-6 h-6 absolute transition-all duration-300 ${isHovered ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`} />
             </motion.div>
         </div>
       </div>
@@ -190,17 +296,7 @@ export default function Services() {
               <ServiceItem key={service.id} service={service} index={index} />
           ))}
           
-          {/* Discover More Item */}
-          <Link href="/services" className="group block border-t border-neutral-800 hover:bg-white hover:text-black transition-colors duration-500">
-              <div className="container mx-auto px-4 py-16 flex items-center justify-between">
-                  <h3 className="text-3xl md:text-5xl font-bold">
-                      Discover all capabilities
-                  </h3>
-                  <div className="p-4 rounded-full border border-current group-hover:scale-110 transition-transform duration-300">
-                      <Plus className="w-8 h-8" />
-                  </div>
-              </div>
-          </Link>
+          <DiscoverItem />
       </div>
     </section>
   );
