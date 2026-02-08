@@ -61,7 +61,7 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
             />
 
             {/* Card Content */}
-            <div className="relative z-10 p-8 flex flex-col h-full bg-gradient-to-br from-slate-900/90 via-blue-950/30 to-slate-900/90 text-white">
+            <div className="relative z-10 p-6 flex flex-col h-full bg-gradient-to-br from-slate-900/90 via-blue-950/30 to-slate-900/90 text-white">
                 <div className="mb-6 p-3 bg-blue-500/10 w-fit rounded-lg text-blue-400 group-hover:text-blue-300 group-hover:bg-blue-500/20 transition-colors duration-300">
                     {icon}
                 </div>
@@ -148,10 +148,10 @@ export default function Process() {
                                 <mask id="cardMask">
                                     <rect x="0" y="0" width="100" height="100" fill="white" />
                                     {/* Masking areas for cards - matching the card positions */}
-                                    <rect x="5" y="20" width="15" height="60" fill="black" />
-                                    <rect x="30" y="0" width="15" height="60" fill="black" />
-                                    <rect x="55" y="40" width="15" height="60" fill="black" />
-                                    <rect x="80" y="20" width="15" height="60" fill="black" />
+                                    <rect x="2.5" y="20" width="20" height="60" fill="black" />
+                                    <rect x="27.5" y="0" width="20" height="60" fill="black" />
+                                    <rect x="52.5" y="40" width="20" height="60" fill="black" />
+                                    <rect x="77.5" y="20" width="20" height="60" fill="black" />
                                 </mask>
                             </defs>
 
@@ -198,7 +198,7 @@ export default function Process() {
                         </svg>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 relative z-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 relative z-10">
                         {processes.map((process, index) => (
                             <div
                                 key={index}
@@ -208,7 +208,7 @@ export default function Process() {
                                 }`}
                             >
                                 {/* Card Wrapper */}
-                                <div className="w-full lg:w-[60%] h-full">
+                                <div className="w-full lg:w-[80%] h-full">
                                     <ProcessCard
                                         {...process}
                                         index={index}
