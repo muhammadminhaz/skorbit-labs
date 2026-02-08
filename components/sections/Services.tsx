@@ -44,6 +44,22 @@ const services = [
   }
 ];
 
+const textGradientDefault = {
+  backgroundImage: "linear-gradient(90deg, #ffffff, #ffffff, #ffffff)",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "#ffffff",
+  backgroundPosition: "0%"
+};
+
+const textGradientHover = {
+  backgroundImage: "linear-gradient(90deg, #3b82f6, #7dd3fc, #3b82f6)",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "rgba(255, 255, 255, 0)",
+  backgroundPosition: ["0%", "200%"]
+};
+
 function ServiceItem({ service, index }: { service: typeof services[0], index: number }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -76,19 +92,8 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
                 <div className="flex flex-col gap-4 w-full max-w-3xl">
                     <motion.h3
                         className="text-3xl md:text-5xl lg:text-6xl font-bold"
-                        animate={isHovered ? {
-                            backgroundImage: "linear-gradient(90deg, #3b82f6, #7dd3fc, #3b82f6)",
-                            backgroundClip: "text",
-                            WebkitBackgroundClip: "text",
-                            color: "transparent",
-                            backgroundPosition: ["0%", "200%"]
-                        } : {
-                            backgroundImage: "linear-gradient(90deg, #ffffff, #ffffff, #ffffff)",
-                            backgroundClip: "text",
-                            WebkitBackgroundClip: "text",
-                            color: "#ffffff",
-                            backgroundPosition: "0%"
-                        }}
+                        initial={textGradientDefault}
+                        animate={isHovered ? textGradientHover : textGradientDefault}
                         transition={{
                             backgroundPosition: {
                                 duration: 3,
@@ -163,6 +168,7 @@ function MagneticButton({ children, href }: { children: React.ReactNode, href: s
 
     return (
         <motion.div
+            initial={{ x: 0, y: 0 }}
             animate={{ x: position.x, y: position.y }}
             transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
         >
@@ -218,19 +224,8 @@ function DiscoverItem() {
                 <div className="flex flex-col gap-4 w-full">
                     <motion.h3
                         className="text-3xl md:text-5xl lg:text-6xl font-bold max-w-3xl"
-                        animate={isHovered ? {
-                            backgroundImage: "linear-gradient(90deg, #3b82f6, #7dd3fc, #3b82f6)",
-                            backgroundClip: "text",
-                            WebkitBackgroundClip: "text",
-                            color: "transparent",
-                            backgroundPosition: ["0%", "200%"]
-                        } : {
-                            backgroundImage: "linear-gradient(90deg, #ffffff, #ffffff, #ffffff)",
-                            backgroundClip: "text",
-                            WebkitBackgroundClip: "text",
-                            color: "#ffffff",
-                            backgroundPosition: "0%"
-                        }}
+                        initial={textGradientDefault}
+                        animate={isHovered ? textGradientHover : textGradientDefault}
                         transition={{
                             backgroundPosition: {
                                 duration: 3,
