@@ -51,7 +51,7 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative border-t border-neutral-800 cursor-pointer overflow-hidden"
+      className="group relative border-t border-neutral-800 cursor-default overflow-hidden"
     >
       {/* Background Image */}
       <motion.div
@@ -139,6 +139,53 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
   );
 }
 
+function MagneticButton({ children, href }: { children: React.ReactNode, href: string }) {
+    const ref = useRef<HTMLAnchorElement>(null);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        const { clientX, clientY } = e;
+        const { left, top, width, height } = ref.current!.getBoundingClientRect();
+        const x = (clientX - (left + width / 2)) * 0.35;
+        const y = (clientY - (top + height / 2)) * 0.35;
+        setPosition({ x, y });
+    };
+
+    const handleMouseLeave = () => {
+        setPosition({ x: 0, y: 0 });
+        setIsHovered(false);
+    };
+
+    const handleMouseEnter = () => {
+        setIsHovered(true);
+    }
+
+    return (
+        <motion.div
+            animate={{ x: position.x, y: position.y }}
+            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+        >
+            <Link 
+                ref={ref}
+                href={href}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                onMouseEnter={handleMouseEnter}
+                className="group/btn relative overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-colors inline-block cursor-pointer"
+            >
+                <span className="relative z-10 transition-colors duration-300 group-hover/btn:text-white">{children}</span>
+                <motion.div 
+                    className="absolute inset-0 bg-sky-400 z-0"
+                    initial={{ clipPath: "circle(0% at 0% 0%)" }}
+                    animate={{ clipPath: isHovered ? "circle(150% at 0% 0%)" : "circle(0% at 0% 0%)" }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                />
+            </Link>
+        </motion.div>
+    );
+}
+
 function DiscoverItem() {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -146,7 +193,7 @@ function DiscoverItem() {
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative border-t border-neutral-800 cursor-pointer overflow-hidden"
+      className="group sticky bottom-0 z-30 bg-neutral-950 border-t border-neutral-800 cursor-default overflow-hidden"
     >
       {/* Background Image */}
       <motion.div
@@ -214,23 +261,9 @@ function DiscoverItem() {
                             transition={{ duration: 0.4, delay: 0.1 }}
                             className="pt-6"
                         >
-                            <Link href="/services">
-                                <motion.button 
-                                    className="group/btn relative overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-colors"
-                                    whileHover="hover"
-                                    initial="initial"
-                                >
-                                    <span className="relative z-10 transition-colors duration-300 group-hover/btn:text-white">What we do</span>
-                                    <motion.div 
-                                        className="absolute inset-0 bg-sky-400 z-0"
-                                        variants={{
-                                            initial: { clipPath: "circle(0% at 0% 0%)" },
-                                            hover: { clipPath: "circle(150% at 0% 0%)" }
-                                        }}
-                                        transition={{ duration: 0.4, ease: "easeInOut" }}
-                                    />
-                                </motion.button>
-                            </Link>
+                            <MagneticButton href="/services">
+                                What we do
+                            </MagneticButton>
                         </motion.div>
                     </motion.div>
                 </div>
