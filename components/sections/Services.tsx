@@ -1,7 +1,207 @@
-export default function Services() {
+"use client";
+
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Plus } from "lucide-react";
+import Link from "next/link";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+const services = [
+  {
+    id: "01",
+    title: "AI Integration",
+    description: "Leverage the power of artificial intelligence to automate processes, enhance decision-making, and create personalized experiences for your users.",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2532&auto=format&fit=crop"
+  },
+  {
+    id: "02",
+    title: "Web Development",
+    description: "Build scalable, high-performance web applications with modern frameworks. We focus on responsive design, SEO optimization, and seamless user experiences.",
+    image: "https://images.unsplash.com/photo-1607799275518-d58665d099db?q=80&w=2670&auto=format&fit=crop"
+  },
+  {
+    id: "03",
+    title: "Mobile App Development",
+    description: "Create native and cross-platform mobile apps that engage users on the go. From concept to launch, we deliver robust solutions for iOS and Android.",
+    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2670&auto=format&fit=crop"
+  },
+  {
+    id: "04",
+    title: "Data Analytics",
+    description: "Turn raw data into actionable insights. Our analytics solutions help you understand user behavior, optimize performance, and drive business growth.",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
+  },
+  {
+    id: "05",
+    title: "Digital Marketing",
+    description: "Amplify your brand's reach with data-driven marketing strategies. We specialize in SEO, content marketing, and paid advertising to maximize ROI.",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop"
+  }
+];
+
+function ServiceItem({ service, index }: { service: typeof services[0], index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <section id="services" className="relative z-20 min-h-screen flex items-center justify-center border-b border-neutral-200 bg-white">
-      <h2>Services (what we do)</h2>
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group relative border-t border-neutral-800 cursor-pointer bg-neutral-950 transition-colors duration-300 hover:bg-neutral-900"
+    >
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        <div className="flex items-start justify-between gap-8">
+            {/* ID & Content */}
+            <div className="flex items-start gap-8 md:gap-16 flex-1">
+                <span className="text-neutral-500 font-mono text-lg md:text-xl pt-2">{service.id}</span>
+                <div className="flex flex-col gap-4 w-full max-w-3xl">
+                    <motion.h3
+                        className="text-3xl md:text-5xl lg:text-6xl font-bold"
+                        animate={isHovered ? {
+                            backgroundImage: "linear-gradient(90deg, #3b82f6, #7dd3fc, #3b82f6)",
+                            backgroundClip: "text",
+                            WebkitBackgroundClip: "text",
+                            color: "transparent",
+                            backgroundPosition: ["0%", "200%"]
+                        } : {
+                            backgroundImage: "linear-gradient(90deg, #ffffff, #ffffff, #ffffff)",
+                            backgroundClip: "text",
+                            WebkitBackgroundClip: "text",
+                            color: "#ffffff",
+                            backgroundPosition: "0%"
+                        }}
+                        transition={{
+                            backgroundPosition: {
+                                duration: 3,
+                                repeat: Infinity,
+                                ease: "linear"
+                            },
+                            color: { duration: 0.2 }
+                        }}
+                    >
+                        {service.title}
+                    </motion.h3>
+                    
+                    {/* Description - Directly under header */}
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ 
+                            height: isHovered ? "auto" : 0,
+                            opacity: isHovered ? 1 : 0
+                        }}
+                        className="overflow-hidden"
+                    >
+                        <p className="text-lg text-neutral-400 leading-relaxed pt-2">
+                            {service.description}
+                        </p>
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* Arrow */}
+            <motion.div
+                animate={{ rotate: isHovered ? 45 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="p-2 rounded-full border border-neutral-700 text-white group-hover:border-sky-400 group-hover:text-sky-400 transition-colors mt-2 shrink-0"
+            >
+                <ArrowRight className="w-6 h-6" />
+            </motion.div>
+        </div>
+      </div>
+
+      {/* Image Strip -> Full Image */}
+      <motion.div
+          className="w-full overflow-hidden"
+          initial={{ height: 0 }}
+          animate={{ 
+              height: isHovered ? "500px" : 0
+          }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+          <img 
+              src={service.image} 
+              alt={service.title} 
+              className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+          />
+      </motion.div>
+    </div>
+  );
+}
+
+export default function Services() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+        // Title Animation
+        gsap.from(titleRef.current, {
+            scrollTrigger: {
+                trigger: sectionRef.current,
+                start: "top 80%",
+                end: "top 50%",
+                scrub: 1,
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1
+        });
+
+        // Staggered List Animation
+        const items = containerRef.current?.children;
+        if (items) {
+            gsap.from(items, {
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: "top 85%",
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power3.out"
+            });
+        }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} id="services" className="relative z-20 min-h-screen py-32 bg-neutral-950 text-white flex flex-col justify-center">
+      <div className="container mx-auto px-4 mb-20">
+        <div ref={titleRef} className="max-w-4xl">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60 mb-6">
+                Our Expertise
+            </h2>
+            <p className="text-xl text-neutral-400 max-w-2xl">
+                We combine strategy, design, and technology to build digital products that transform businesses.
+            </p>
+        </div>
+      </div>
+
+      <div ref={containerRef} className="w-full border-b border-neutral-800">
+          {services.map((service, index) => (
+              <ServiceItem key={service.id} service={service} index={index} />
+          ))}
+          
+          {/* Discover More Item */}
+          <Link href="/services" className="group block border-t border-neutral-800 hover:bg-white hover:text-black transition-colors duration-500">
+              <div className="container mx-auto px-4 py-16 flex items-center justify-between">
+                  <h3 className="text-3xl md:text-5xl font-bold">
+                      Discover all capabilities
+                  </h3>
+                  <div className="p-4 rounded-full border border-current group-hover:scale-110 transition-transform duration-300">
+                      <Plus className="w-8 h-8" />
+                  </div>
+              </div>
+          </Link>
+      </div>
     </section>
   );
 }
