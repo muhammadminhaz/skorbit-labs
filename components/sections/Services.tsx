@@ -168,9 +168,9 @@ function DiscoverItem() {
         <div className="flex items-start justify-between gap-8">
             {/* Content */}
             <div className="flex items-start flex-1">
-                <div className="flex flex-col gap-4 w-full max-w-3xl">
+                <div className="flex flex-col gap-4 w-full">
                     <motion.h3
-                        className="text-3xl md:text-5xl lg:text-6xl font-bold"
+                        className="text-3xl md:text-5xl lg:text-6xl font-bold max-w-3xl"
                         animate={isHovered ? {
                             backgroundImage: "linear-gradient(90deg, #3b82f6, #7dd3fc, #3b82f6)",
                             backgroundClip: "text",
@@ -196,14 +196,14 @@ function DiscoverItem() {
                         Discover all capabilities
                     </motion.h3>
                     
-                    {/* Button - Directly under header */}
+                    {/* Button - Centered */}
                     <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ 
                             height: isHovered ? "auto" : 0,
                             opacity: isHovered ? 1 : 0
                         }}
-                        className="overflow-hidden"
+                        className="overflow-hidden w-full flex justify-center"
                     >
                         <motion.div 
                             initial={{ y: 20, opacity: 0 }}
@@ -215,10 +215,21 @@ function DiscoverItem() {
                             className="pt-6"
                         >
                             <Link href="/services">
-                                <button className="group/btn relative overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-colors">
+                                <motion.button 
+                                    className="group/btn relative overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-colors"
+                                    whileHover="hover"
+                                    initial="initial"
+                                >
                                     <span className="relative z-10 transition-colors duration-300 group-hover/btn:text-white">What we do</span>
-                                    <div className="absolute inset-0 -translate-x-full bg-sky-400 transition-transform duration-300 group-hover/btn:translate-x-0" />
-                                </button>
+                                    <motion.div 
+                                        className="absolute inset-0 bg-sky-400 z-0"
+                                        variants={{
+                                            initial: { clipPath: "circle(0% at 0% 0%)" },
+                                            hover: { clipPath: "circle(150% at 0% 0%)" }
+                                        }}
+                                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                                    />
+                                </motion.button>
                             </Link>
                         </motion.div>
                     </motion.div>
