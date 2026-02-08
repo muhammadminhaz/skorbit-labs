@@ -33,7 +33,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight max-w-5xl bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60"
+                className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight max-w-5xl bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60"
             >
                 From execution to distribution, we do it all
             </motion.h1>

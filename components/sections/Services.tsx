@@ -321,7 +321,7 @@ export default function Services() {
     <section ref={sectionRef} id="services" className="relative z-20 min-h-screen py-32 bg-neutral-950 text-white flex flex-col justify-center">
       <div className="container mx-auto px-4 mb-20">
         <div ref={titleRef} className="max-w-4xl">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60 mb-6">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
                 Our Expertise
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl">

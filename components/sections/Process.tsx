@@ -61,12 +61,12 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
             />
 
             {/* Card Content */}
-            <div className="relative z-10 p-6 flex flex-col h-full bg-gradient-to-br from-slate-900/90 via-blue-950/30 to-slate-900/90 text-white">
+            <div className="relative z-10 p-6 flex flex-col h-full bg-linear-to-br from-slate-900/90 via-blue-950/30 to-slate-900/90 text-white">
                 <div className="mb-6 p-3 bg-blue-500/10 w-fit rounded-lg text-blue-400 group-hover:text-blue-300 group-hover:bg-blue-500/20 transition-colors duration-300">
                     {icon}
                 </div>
 
-                <h3 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-blue-400">
+                <h3 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-linear-to-r from-blue-200 to-blue-400">
                     {index + 1}. {title}
                 </h3>
 
@@ -218,7 +218,7 @@ export default function Process() {
 
                                 {/* Connector Line (Mobile/Tablet) */}
                                 {index < processes.length - 1 && (
-                                    <div className="lg:hidden absolute left-1/2 -bottom-12 w-[1px] h-12 bg-gradient-to-b from-blue-500/50 to-blue-500/50 z-0 transform -translate-x-1/2" />
+                                    <div className="lg:hidden absolute left-1/2 -bottom-12 w-[1px] h-12 bg-linear-to-b from-blue-500/50 to-blue-500/50 z-0 transform -translate-x-1/2" />
                                 )}
                             </div>
                         ))}

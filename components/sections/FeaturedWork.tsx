@@ -69,7 +69,7 @@ function ProjectCard({ project, hoveredId, setHoveredId }: {
           className="group relative flex flex-col gap-4 cursor-none h-full"
         >
             {/* Image Container */}
-            <div className={`relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-neutral-900 transition-all duration-500 ${isHovered ? 'shadow-[0_0_30px_rgba(14,165,233,0.3)] ring-2 ring-sky-400/50' : 'border border-white/10'}`}>
+            <div className={`relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-900 transition-all duration-500 ${isHovered ? 'shadow-[0_0_30px_rgba(14,165,233,0.3)] ring-2 ring-sky-400/50' : 'border border-white/10'}`}>
                 {/* Default Image */}
                 <img 
                     src={project.image} 
@@ -239,7 +239,7 @@ export default function FeaturedWork() {
         <div className="container px-4 mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                 <div ref={titleRef}>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60 mb-4">Featured Work</h2>
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-4">Featured Work</h2>
                     <p className="text-lg text-neutral-400 max-w-xl">
                         We build digital products that define brands and drive growth. Here are a few of our favorites.
                     </p>
