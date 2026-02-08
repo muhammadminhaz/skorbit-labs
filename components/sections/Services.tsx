@@ -51,9 +51,25 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative border-t border-neutral-800 cursor-pointer bg-neutral-950 transition-colors duration-300 hover:bg-neutral-900"
+      className="group relative border-t border-neutral-800 cursor-pointer overflow-hidden"
     >
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      {/* Background Image */}
+      <motion.div
+          className="absolute inset-0 z-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+      >
+          <img 
+              src={service.image} 
+              alt={service.title} 
+              className="w-full h-full object-cover"
+          />
+          {/* Dark Overlay for Readability */}
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
+      </motion.div>
+
+      <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="flex items-start justify-between gap-8">
             {/* ID & Content */}
             <div className="flex items-start gap-8 md:gap-16 flex-1">
@@ -95,7 +111,7 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
                         }}
                         className="overflow-hidden"
                     >
-                        <p className="text-lg text-neutral-400 leading-relaxed pt-2">
+                        <p className="text-lg text-neutral-300 leading-relaxed pt-2 font-medium">
                             {service.description}
                         </p>
                     </motion.div>
@@ -106,28 +122,12 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
             <motion.div
                 animate={{ rotate: isHovered ? 45 : 0 }}
                 transition={{ duration: 0.3 }}
-                className="p-2 rounded-full border border-neutral-700 text-white group-hover:border-sky-400 group-hover:text-sky-400 transition-colors mt-2 shrink-0"
+                className="p-2 rounded-full border border-neutral-700 text-white group-hover:border-sky-400 group-hover:text-sky-400 transition-colors mt-2 shrink-0 bg-black/20 backdrop-blur-sm"
             >
                 <ArrowRight className="w-6 h-6" />
             </motion.div>
         </div>
       </div>
-
-      {/* Image Strip -> Full Image */}
-      <motion.div
-          className="w-full overflow-hidden"
-          initial={{ height: 0 }}
-          animate={{ 
-              height: isHovered ? "500px" : 0
-          }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      >
-          <img 
-              src={service.image} 
-              alt={service.title} 
-              className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
-          />
-      </motion.div>
     </div>
   );
 }
