@@ -18,9 +18,8 @@ export default function Home() {
             <FeaturedWork/>
             <Services/>
             <Process/>
-            <WhySkorbit/>
             <Testimonials/>
-            <CTA/>
+            <WhySkorbit/>
             <Footer/>
         </main>
     );
