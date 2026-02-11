@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+import Link from "next/link";
+import MagneticButton from "../ui/MagneticButton";
 
-// The GlowBlock component has been simplified. It no longer contains internal wrappers
-// that interfere with layout. It is now just a styled container.
 interface GlowBlockProps {
   children: React.ReactNode;
   className?: string;
@@ -56,7 +56,6 @@ const GlowBlock = ({
           maskComposite: 'exclude',
         }}
       />
-      {/* Children are rendered directly. The z-index wrapper is now outside. */}
       {children}
     </div>
   );
@@ -65,10 +64,25 @@ const GlowBlock = ({
 export default function Footer() {
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+      const gmtOffset = -now.getTimezoneOffset() / 60;
+      setTime(`${timeString} (GMT${gmtOffset >= 0 ? '+' : ''}${gmtOffset})`);
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePos({ x: Math.round(e.clientX), y: Math.round(e.clientY) });
   };
+
+  const shapeClass = "rounded-tl-[3rem] rounded-br-[3rem] md:rounded-tl-[6rem] md:rounded-br-[6rem] rounded-tr-xl rounded-bl-xl";
 
   return (
       <section 
@@ -78,20 +92,48 @@ export default function Footer() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-          {/*
-            GlowBlock is now the flex container. `justify-end` pushes its direct child to the bottom.
-          */}
           <GlowBlock
               mousePos={mousePos}
               containerHovered={isHovered}
-              className="w-full grow flex flex-col justify-end"
+              className="w-full grow flex flex-col"
           >
-              {/* 
-                This wrapper handles z-index to appear above the glow effect, and padding.
-                As a flex item, it will be pushed to the bottom of the GlowBlock.
-              */}
-              <div className="relative z-10 p-6 md:p-12">
-                <div className="w-full overflow-hidden relative">
+              <div className="relative z-10 grow flex flex-col p-6 md:p-12">
+                {/* Top Sub-Container */}
+                <div className={`relative ${shapeClass} bg-linear-to-br from-blue-400/20 to-blue-400 backdrop-blur-lg p-12 md:p-20 flex flex-col items-center text-center -m-6 md:-m-12 mb-12`}>
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
+                        Join the thrill
+                    </h2>                  <MagneticButton className="text-lg cursor-pointer">Let's Talk</MagneticButton>
+                </div>
+
+                {/* Middle Section */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 my-auto pt-12">
+                  <div className="md:col-span-3 flex flex-col gap-4">
+                    <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Index</h3>
+                    <nav className="flex flex-col gap-2">
+                      {['Home', 'Services', 'Privacy Policy', 'Terms of Use'].map((item) => (
+                        <Link key={item} href="#" className="text-neutral-300 hover:text-white transition-colors text-lg">
+                          {item}
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                  <div className="md:col-span-3 flex flex-col gap-4">
+                    <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Social</h3>
+                    <nav className="flex flex-col gap-2">
+                      {['Facebook', 'X', 'Instagram', 'LinkedIn'].map((item) => (
+                        <Link key={item} href="#" className="text-neutral-300 hover:text-white transition-colors text-lg">
+                          {item}
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                  <div className="md:col-span-6 flex items-end justify-end">
+                    <p className="text-neutral-600 font-mono text-sm">{time}</p>
+                  </div>
+                </div>
+
+                {/* Bottom Section */}
+                <div className="w-full overflow-hidden relative mt-auto -mb-6 md:-mb-12">
                     <h1 className="text-[13vw] leading-[1] font-bold text-white text-center tracking-tighter select-none opacity-90 whitespace-nowrap">
                         Skorbit Labs
                     </h1>

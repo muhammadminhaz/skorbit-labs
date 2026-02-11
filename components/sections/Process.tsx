@@ -123,8 +123,8 @@ export default function Process() {
 
             <div className="w-full max-w-[95%] mx-auto px-4 relative z-10" ref={containerRef}>
                 <div className="mb-32 text-center">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
-                        Our <span className="text-blue-500">Process</span>
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
+                        Our Process
                     </h2>
                     <p className="text-slate-400 max-w-2xl mx-auto text-lg">
                         A streamlined approach to turning your ideas into reality, from concept to launch.
