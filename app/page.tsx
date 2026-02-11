@@ -21,7 +21,6 @@ export default function Home() {
             <Services/>
             <Process/>
             <Testimonials/>
-            <WhySkorbit/>
             <Footer/>
         </main>
     );
