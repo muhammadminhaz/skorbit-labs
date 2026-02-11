@@ -14,7 +14,6 @@ interface ProcessCardProps {
 const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardProps) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [localMousePos, setLocalMousePos] = useState({ x: -1000, y: -1000 });
-    const [rotation, setRotation] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
         if (cardRef.current) {
@@ -23,20 +22,6 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
                 x: mousePos.x - rect.left,
                 y: mousePos.y - rect.top,
             });
-
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            const distanceX = mousePos.x - centerX;
-            const distanceY = mousePos.y - centerY;
-
-            // Subtle tilt effect
-            const maxRotation = 5;
-
-            const rotateY = (distanceX / (window.innerWidth / 2)) * maxRotation;
-            const rotateX = -(distanceY / (window.innerHeight / 2)) * maxRotation;
-
-            setRotation({ x: rotateX, y: rotateY });
         }
     }, [mousePos]);
 
@@ -44,9 +29,6 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
         <div
             ref={cardRef}
             className="relative group flex flex-col h-full bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden transition-transform duration-100 ease-out z-10"
-            style={{
-                transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-            }}
         >
             {/* Border Glow Effect */}
             <div
