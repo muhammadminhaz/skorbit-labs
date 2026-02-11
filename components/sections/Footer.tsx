@@ -3,6 +3,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import MagneticButton from "../ui/MagneticButton";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface GlowBlockProps {
   children: React.ReactNode;
@@ -65,6 +69,11 @@ export default function Footer() {
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
   const [time, setTime] = useState("");
+  const footerRef = useRef<HTMLElement>(null);
+  const titleRef = useRef(null);
+  const indexLinksRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const socialLinksRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const bigTextRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const updateTime = () => {
@@ -75,7 +84,71 @@ export default function Footer() {
     };
     updateTime();
     const timer = setInterval(updateTime, 1000);
-    return () => clearInterval(timer);
+
+    const ctx = gsap.context(() => {
+      // Animate title and button
+      gsap.from(titleRef.current, {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        scrollTrigger: {
+          trigger: titleRef.current,
+          start: "top 90%",
+        }
+      });
+
+      // Animate links
+      const animateLinks = (links: (HTMLAnchorElement | null)[]) => {
+        links.forEach((link, index) => {
+          if (link) {
+            gsap.from(link, {
+              opacity: 0,
+              y: 20,
+              duration: 0.5,
+              delay: index * 0.1,
+              scrollTrigger: {
+                trigger: link,
+                start: "top 95%",
+              }
+            });
+          }
+        });
+      };
+      animateLinks(indexLinksRef.current);
+      animateLinks(socialLinksRef.current);
+
+      // Animate big text
+      if (bigTextRef.current) {
+        const text = bigTextRef.current.textContent || "";
+        bigTextRef.current.textContent = "";
+        const chars = text.split("");
+        
+        chars.forEach((char, index) => {
+          const span = document.createElement("span");
+          span.innerHTML = char === ' ' ? '&nbsp;' : char;
+          span.style.display = "inline-block";
+          span.style.opacity = "0";
+          span.style.transform = "translateY(50px)";
+          bigTextRef.current?.appendChild(span);
+
+          gsap.to(span, {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: index * 0.05,
+            scrollTrigger: {
+              trigger: bigTextRef.current,
+              start: "top 90%",
+            }
+          });
+        });
+      }
+    }, footerRef);
+
+    return () => {
+      clearInterval(timer);
+      ctx.revert();
+    };
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -87,6 +160,7 @@ export default function Footer() {
   return (
       <section 
         id="footer" 
+        ref={footerRef}
         className="relative z-20 min-h-screen bg-black p-4 md:p-8 flex flex-col"
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
@@ -99,10 +173,11 @@ export default function Footer() {
           >
               <div className="relative z-10 grow flex flex-col p-6 md:p-12">
                 {/* Top Sub-Container */}
-                <div className={`relative ${shapeClass} bg-linear-to-br from-blue-400/20 to-blue-400 backdrop-blur-lg p-12 md:p-20 flex flex-col items-center text-center -m-6 md:-m-12 mb-12`}>
+                <div ref={titleRef} className={`relative ${shapeClass} bg-linear-to-br from-blue-400/20 to-blue-400 backdrop-blur-lg p-12 md:p-20 flex flex-col items-center text-center -m-6 md:-m-12 mb-12`}>
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
                         Join the thrill
-                    </h2>                  <MagneticButton className="text-lg cursor-pointer">Let's Talk</MagneticButton>
+                    </h2>
+                    <MagneticButton className="text-lg cursor-pointer">Let's Talk</MagneticButton>
                 </div>
 
                 {/* Middle Section */}
@@ -110,8 +185,8 @@ export default function Footer() {
                   <div className="md:col-span-3 flex flex-col gap-4">
                     <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Index</h3>
                     <nav className="flex flex-col gap-2">
-                      {['Home', 'Services', 'Privacy Policy', 'Terms of Use'].map((item) => (
-                        <Link key={item} href="#" className="text-neutral-300 hover:text-white transition-colors text-lg">
+                      {['Home', 'Services', 'Privacy Policy', 'Terms of Use'].map((item, i) => (
+                        <Link key={item} href="#" ref={el => indexLinksRef.current[i] = el} className="text-neutral-300 hover:text-white transition-colors text-lg">
                           {item}
                         </Link>
                       ))}
@@ -120,8 +195,8 @@ export default function Footer() {
                   <div className="md:col-span-3 flex flex-col gap-4">
                     <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Social</h3>
                     <nav className="flex flex-col gap-2">
-                      {['Facebook', 'X', 'Instagram', 'LinkedIn'].map((item) => (
-                        <Link key={item} href="#" className="text-neutral-300 hover:text-white transition-colors text-lg">
+                      {['Facebook', 'X', 'Instagram', 'LinkedIn'].map((item, i) => (
+                        <Link key={item} href="#" ref={el => socialLinksRef.current[i] = el} className="text-neutral-300 hover:text-white transition-colors text-lg">
                           {item}
                         </Link>
                       ))}
@@ -134,7 +209,7 @@ export default function Footer() {
 
                 {/* Bottom Section */}
                 <div className="w-full overflow-hidden relative mt-auto -mb-6 md:-mb-12">
-                    <h1 className="text-[13vw] leading-[1] font-bold text-white text-center tracking-tighter select-none opacity-90 whitespace-nowrap">
+                    <h1 ref={bigTextRef} className="text-[13vw] leading-none font-bold text-white text-center tracking-tighter select-none opacity-90 whitespace-nowrap mb-1">
                         Skorbit Labs
                     </h1>
                 </div>

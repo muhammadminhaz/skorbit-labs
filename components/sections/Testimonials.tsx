@@ -1,6 +1,9 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const testimonials = [
     {
@@ -83,8 +86,47 @@ const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] 
 };
 
 export default function Testimonials() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const titleRef = useRef<HTMLHeadingElement>(null);
+    const textRef = useRef<HTMLParagraphElement>(null);
+    const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            // Animate title and text
+            gsap.from([titleRef.current, textRef.current], {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: titleRef.current,
+                    start: "top 80%",
+                }
+            });
+
+            // Animate testimonial cards
+            cardsRef.current.forEach((card, index) => {
+                if (card) {
+                    gsap.from(card, {
+                        opacity: 0,
+                        y: 50,
+                        duration: 0.6,
+                        delay: index * 0.1,
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 85%",
+                        }
+                    });
+                }
+            });
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <section id="testimonials" className="relative z-20 py-32 bg-neutral-950 text-white overflow-hidden">
+        <section id="testimonials" ref={sectionRef} className="relative z-20 py-32 bg-neutral-950 text-white overflow-hidden">
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
                     <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[150px] mix-blend-lighten animate-pulse" />
@@ -94,25 +136,19 @@ export default function Testimonials() {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-4xl mb-20 text-center mx-auto">
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
+                    <h2 ref={titleRef} className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
                         Testimonials
                     </h2>
-                    <p className="text-xl text-neutral-400 max-w-3xl mx-auto">
+                    <p ref={textRef} className="text-xl text-neutral-400 max-w-3xl mx-auto">
                         Hear what our clients have to say about their experience partnering with Skorbit Labs to bring their ideas to life.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {testimonials.map((testimonial, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.2 }}
-                            transition={{ duration: 0.6, delay: index * 0.1 }}
-                        >
+                        <div key={index} ref={el => cardsRef.current[index] = el}>
                             <TestimonialCard testimonial={testimonial} />
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>
