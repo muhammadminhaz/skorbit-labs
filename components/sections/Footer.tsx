@@ -186,7 +186,7 @@ export default function Footer() {
                     <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Index</h3>
                     <nav className="flex flex-col gap-2">
                       {['Home', 'Services', 'Privacy Policy', 'Terms of Use'].map((item, i) => (
-                        <Link key={item} href="#" ref={el => indexLinksRef.current[i] = el} className="text-neutral-300 hover:text-white transition-colors text-lg">
+                        <Link key={item} href="#" ref={el => { indexLinksRef.current[i] = el; }} className="text-neutral-300 hover:text-white transition-colors text-lg">
                           {item}
                         </Link>
                       ))}
@@ -196,7 +196,7 @@ export default function Footer() {
                     <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Social</h3>
                     <nav className="flex flex-col gap-2">
                       {['Facebook', 'X', 'Instagram', 'LinkedIn'].map((item, i) => (
-                        <Link key={item} href="#" ref={el => socialLinksRef.current[i] = el} className="text-neutral-300 hover:text-white transition-colors text-lg">
+                        <Link key={item} href="#" ref={el => { socialLinksRef.current[i] = el; }} className="text-neutral-300 hover:text-white transition-colors text-lg">
                           {item}
                         </Link>
                       ))}
@@ -209,7 +209,7 @@ export default function Footer() {
 
                 {/* Bottom Section */}
                 <div className="w-full overflow-hidden relative mt-auto -mb-6 md:-mb-12">
-                    <h1 ref={bigTextRef} className="text-[13vw] leading-none font-bold text-white text-center tracking-tighter select-none opacity-90 whitespace-nowrap mb-1">
+                    <h1 ref={bigTextRef} className="text-[13vw] leading-[1] font-bold text-white text-center tracking-tighter select-none opacity-90 whitespace-nowrap">
                         Skorbit Labs
                     </h1>
                 </div>
