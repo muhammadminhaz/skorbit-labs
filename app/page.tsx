@@ -8,6 +8,7 @@ import CTA from "@/components/sections/CTA";
 import Footer from "@/components/sections/Footer";
 import FeaturedWork from "@/components/sections/FeaturedWork";
 import Testimonials from "@/components/sections/Testimonials";
+import Introduction from "@/components/sections/Introduction";
 
 export default function Home() {
     return (
@@ -16,6 +17,7 @@ export default function Home() {
             <Hero/>
             <Philosophy/>
             <FeaturedWork/>
+            <Introduction/>
             <Services/>
             <Process/>
             <Testimonials/>
