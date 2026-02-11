@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import Link from "next/link";
 
+// The GlowBlock component has been simplified. It no longer contains internal wrappers
+// that interfere with layout. It is now just a styled container.
 interface GlowBlockProps {
   children: React.ReactNode;
   className?: string;
@@ -36,8 +37,7 @@ const GlowBlock = ({
     return () => cancelAnimationFrame(rafId);
   }, [mousePos]);
 
-  // Asymmetric shape: increased curve on top-left and bottom-right
-  const shapeClass = "rounded-tl-[6rem] rounded-br-[6rem] rounded-tr-xl rounded-bl-xl";
+  const shapeClass = "rounded-tl-[3rem] rounded-br-[3rem] md:rounded-tl-[6rem] md:rounded-br-[6rem] rounded-tr-xl rounded-bl-xl";
 
   return (
     <div
@@ -56,10 +56,8 @@ const GlowBlock = ({
           maskComposite: 'exclude',
         }}
       />
-
-      <div className="relative z-10 text-white h-full w-full">
-          {children}
-      </div>
+      {/* Children are rendered directly. The z-index wrapper is now outside. */}
+      {children}
     </div>
   );
 };
@@ -75,19 +73,29 @@ export default function Footer() {
   return (
       <section 
         id="footer" 
-        className="relative z-20 min-h-screen bg-black p-8 flex flex-col"
+        className="relative z-20 min-h-screen bg-black p-4 md:p-8 flex flex-col"
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+          {/*
+            GlowBlock is now the flex container. `justify-end` pushes its direct child to the bottom.
+          */}
           <GlowBlock
               mousePos={mousePos}
               containerHovered={isHovered}
-              className="w-full grow p-12"
+              className="w-full grow flex flex-col justify-end"
           >
-              <div className="flex flex-col items-center justify-center h-full">
-                  <h2 className="text-4xl font-bold mb-4">Let's Connect</h2>
-                  <p className="text-neutral-400">The container now fills the viewport.</p>
+              {/* 
+                This wrapper handles z-index to appear above the glow effect, and padding.
+                As a flex item, it will be pushed to the bottom of the GlowBlock.
+              */}
+              <div className="relative z-10 p-6 md:p-12">
+                <div className="w-full overflow-hidden relative">
+                    <h1 className="text-[13vw] leading-[1] font-bold text-white text-center tracking-tighter select-none opacity-90 whitespace-nowrap">
+                        Skorbit Labs
+                    </h1>
+                </div>
               </div>
           </GlowBlock>
       </section>
