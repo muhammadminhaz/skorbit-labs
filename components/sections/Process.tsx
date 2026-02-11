@@ -119,7 +119,7 @@ export default function Process() {
             onMouseMove={handleMouseMove}
         >
             {/* Background Gradient */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-slate-950 to-slate-950 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-blue-900/10 via-slate-950 to-slate-950 pointer-events-none" />
 
             <div className="w-full max-w-[95%] mx-auto px-4 relative z-10" ref={containerRef}>
                 <div className="mb-32 text-center">
@@ -218,7 +218,7 @@ export default function Process() {
 
                                 {/* Connector Line (Mobile/Tablet) */}
                                 {index < processes.length - 1 && (
-                                    <div className="lg:hidden absolute left-1/2 -bottom-12 w-[1px] h-12 bg-linear-to-b from-blue-500/50 to-blue-500/50 z-0 transform -translate-x-1/2" />
+                                    <div className="lg:hidden absolute left-1/2 -bottom-12 w-px h-12 bg-linear-to-b from-blue-500/50 to-blue-500/50 z-0 transform -translate-x-1/2" />
                                 )}
                             </div>
                         ))}
