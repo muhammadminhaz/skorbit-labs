@@ -2,6 +2,10 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { Search, BarChart2, Code, Rocket } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ProcessCardProps {
     title: string;
@@ -66,6 +70,43 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
 export default function Process() {
     const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
     const containerRef = useRef<HTMLDivElement>(null);
+    const titleRef = useRef<HTMLHeadingElement>(null);
+    const textRef = useRef<HTMLParagraphElement>(null);
+    const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            // Animate title and text
+            gsap.from([titleRef.current, textRef.current], {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: titleRef.current,
+                    start: "top 80%",
+                }
+            });
+
+            // Animate process cards
+            cardsRef.current.forEach((card, index) => {
+                if (card) {
+                    gsap.from(card, {
+                        opacity: 0,
+                        y: 50,
+                        duration: 0.6,
+                        delay: index * 0.1,
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 85%",
+                        }
+                    });
+                }
+            });
+        }, containerRef);
+
+        return () => ctx.revert();
+    }, []);
 
     const handleMouseMove = (e: React.MouseEvent) => {
         setMousePos({ x: e.clientX, y: e.clientY });
@@ -105,10 +146,10 @@ export default function Process() {
 
             <div className="w-full max-w-[95%] mx-auto px-4 relative z-10" ref={containerRef}>
                 <div className="mb-32 text-center">
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
+                    <h2 ref={titleRef} className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
                         Our Process
                     </h2>
-                    <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                    <p ref={textRef} className="text-slate-400 max-w-2xl mx-auto text-lg">
                         A streamlined approach to turning your ideas into reality, from concept to launch.
                     </p>
                 </div>
@@ -190,7 +231,7 @@ export default function Process() {
                                 }`}
                             >
                                 {/* Card Wrapper */}
-                                <div className="w-full lg:w-[80%] h-full">
+                                <div className="w-full lg:w-[80%] h-full" ref={el => { cardsRef.current[index] = el; }}>
                                     <ProcessCard
                                         {...process}
                                         index={index}
