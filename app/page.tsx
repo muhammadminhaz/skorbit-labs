@@ -17,7 +17,6 @@ export default function Home() {
             <Hero/>
             <Philosophy/>
             <FeaturedWork/>
-            <Introduction/>
             <Services/>
             <Process/>
             <Testimonials/>
