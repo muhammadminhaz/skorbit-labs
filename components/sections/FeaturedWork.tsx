@@ -235,8 +235,8 @@ export default function FeaturedWork() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="featured-work" className="relative z-20 min-h-screen flex flex-col justify-center py-32 bg-neutral-950 text-white">
-        <div className="container px-4 mx-auto">
+    <section ref={sectionRef} id="featured-work" className="relative z-20 min-h-screen w-full max-w-[100vw] flex flex-col justify-center py-32 bg-neutral-950 text-white overflow-hidden">
+        <div className="container px-4 mx-auto w-full max-w-full overflow-hidden">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                 <div ref={titleRef}>
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-4">Featured Work</h2>
