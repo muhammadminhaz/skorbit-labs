@@ -100,7 +100,7 @@ export default function Philosophy() {
     <section
       ref={sectionRef}
       id="philosophy"
-      className="relative min-h-screen flex flex-col items-center justify-center bg-neutral-900 text-white overflow-hidden z-10"
+      className="relative w-full min-h-screen flex flex-col items-center justify-center bg-neutral-900 text-white overflow-hidden z-10"
     >
       {/* Centered Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
