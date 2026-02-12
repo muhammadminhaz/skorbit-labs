@@ -146,7 +146,7 @@ export default function Testimonials() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {testimonials.map((testimonial, index) => (
-                        <div key={index} ref={el => cardsRef.current[index] = el}>
+                        <div key={index} ref={el => { cardsRef.current[index] = el; }}>
                             <TestimonialCard testimonial={testimonial} />
                         </div>
                     ))}
