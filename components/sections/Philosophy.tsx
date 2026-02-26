@@ -10,26 +10,39 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 
 export default function Philosophy() {
   const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const box1Ref = useRef<HTMLDivElement>(null);
   const box2Ref = useRef<HTMLDivElement>(null);
 
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current;
+    const videoContainer = videoRef.current;
     const text = textRef.current;
     const box1 = box1Ref.current;
     const box2 = box2Ref.current;
 
-    if (!section || !text || !box1 || !box2) return;
+    if (!section || !videoContainer || !text || !box1 || !box2) return;
 
     // Initial state
+    gsap.set(videoContainer, { 
+      width: "90%", 
+      height: "85%", 
+      borderRadius: "40px", 
+      opacity: 1,
+      left: "50%",
+      top: "50%",
+      xPercent: -50,
+      yPercent: -50,
+      transformOrigin: "center center"
+    });
     gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
     gsap.set(box1, { x: "-50vw", yPercent: 20, xPercent: -50 });
     gsap.set(box2, { x: "50vw", yPercent: -80, xPercent: 50 });
 
     const ctx = gsap.context(() => {
-      const pinDistance = 2500; // Increased from 1000 to keep boxes moving longer while pinned
-      const totalDistance = 4000; // Increased from 3000 to match the scale
+      const pinDistance = 3500; // Increased to accommodate video animation
+      const totalDistance = 5000; 
 
       // 1. Pinning Logic
       ScrollTrigger.create({
@@ -41,21 +54,7 @@ export default function Philosophy() {
         scrub: true,
       });
 
-      // 2. Pre-Pin Animation (Text Appearing)
-      gsap.to(text, {
-        scrollTrigger: {
-          trigger: section,
-          start: "top 60%",
-          end: "top top",
-          scrub: true,
-        },
-        opacity: 1,
-        filter: "blur(0px)",
-        scale: 1,
-        ease: "power2.out",
-      });
-
-      // 3. Main Animation (Boxes Crossing & Text Exit)
+      // Main Timeline for sequential animations
       const mainTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -65,31 +64,53 @@ export default function Philosophy() {
         },
       });
 
-      const boxDuration = 3;
+      // A. Video Animation (Shrink and leave)
+      mainTl.to(videoContainer, {
+        width: "60%",
+        height: "35%",
+        borderRadius: "24px",
+        duration: 1,
+        ease: "power2.inOut"
+      })
+      .to(videoContainer, {
+        yPercent: -150, // Move it out of viewport using percent for consistency
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.in"
+      })
 
-      mainTl
-        // Boxes move from edges to opposite sides
-        .to(box1, {
-          x: "100vw", 
-          duration: boxDuration,
-          ease: "none",
-        }, 0)
-        .to(box2, {
-          x: "-100vw", 
-          duration: boxDuration,
-          ease: "none",
-        }, 0);
+      // B. Header Text Appearance (after video leaves)
+      .to(text, {
+        opacity: 1,
+        filter: "blur(0px)",
+        scale: 1,
+        duration: 0.8,
+        ease: "power2.out"
+      }, ">-0.4") // Start slightly before video fully disappears
+
+      // C. Box Movement (Crossing)
+      const boxDuration = 3;
+      mainTl.to(box1, {
+        x: "100vw", 
+        duration: boxDuration,
+        ease: "none",
+      }, ">")
+      .to(box2, {
+        x: "-100vw", 
+        duration: boxDuration,
+        ease: "none",
+      }, "<") // Start at the same time as box1
         
-      // Text fades out starting exactly when the pin ends
-      // Calculate the time in the timeline corresponding to the pin end
-      const fadeStartTime = (pinDistance / totalDistance) * boxDuration;
+      // D. Text Fade Out (at the end of pin)
+      const fadeStartTime = (pinDistance / totalDistance) * (1 + 0.8 + 0.8 + boxDuration);
+      // Actually let's just use the timeline flow
 
       mainTl.to(text, {
         opacity: 0,
         filter: "blur(20px)",
         scale: 1.1,
         duration: 1,
-      }, fadeStartTime);
+      }, ">");
 
     }, sectionRef);
 
@@ -102,6 +123,23 @@ export default function Philosophy() {
       id="philosophy"
       className="relative w-full min-h-screen flex flex-col items-center justify-center bg-neutral-900 text-white overflow-hidden z-10"
     >
+      {/* Video Background/Foreground Section */}
+      <div 
+        ref={videoRef}
+        className="absolute z-30 flex items-center justify-center overflow-hidden"
+      >
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src="/video/video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
       {/* Centered Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <h2
