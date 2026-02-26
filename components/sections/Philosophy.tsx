@@ -24,93 +24,119 @@ export default function Philosophy() {
 
     if (!section || !videoContainer || !text || !box1 || !box2) return;
 
-    // Initial state
-    gsap.set(videoContainer, { 
-      width: "90%", 
-      height: "85%", 
-      borderRadius: "40px", 
-      opacity: 1,
-      left: "50%",
-      top: "50%",
-      xPercent: -50,
-      yPercent: -50,
-      transformOrigin: "center center"
-    });
-    gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
-    gsap.set(box1, { x: "-50vw", yPercent: 20, xPercent: -50 });
-    gsap.set(box2, { x: "50vw", yPercent: -80, xPercent: 50 });
-
     const ctx = gsap.context(() => {
-      const pinDistance = 3500; // Increased to accommodate video animation
-      const totalDistance = 5000; 
+      const pinDistance = 4000; 
+      const totalDistance = 6000; 
 
-      // 1. Pinning Logic
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: `+=${pinDistance}`,
-        pin: true,
-        pinSpacing: true,
-        scrub: true,
-      });
+      const mm = gsap.matchMedia();
 
-      // Main Timeline for sequential animations
-      const mainTl = gsap.timeline({
-        scrollTrigger: {
+      mm.add({
+        isMobile: "(max-width: 768px)",
+        isDesktop: "(min-width: 769px)"
+      }, (context) => {
+        const { isMobile } = context.conditions as { isMobile: boolean };
+
+        // Reset positions and initial states inside matchMedia
+        gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
+        gsap.set(box1, { x: "-50vw", yPercent: 20, xPercent: -50 });
+        gsap.set(box2, { x: "50vw", yPercent: -80, xPercent: 50 });
+
+        // Initial state adjustments for landscape video
+        if (isMobile) {
+          gsap.set(videoContainer, { 
+            width: "95vw", 
+            height: "auto",
+            aspectRatio: "16/9",
+            borderRadius: "20px",
+          });
+        } else {
+          gsap.set(videoContainer, { 
+            width: "80vw", 
+            height: "auto",
+            aspectRatio: "16/9",
+            borderRadius: "40px", 
+          });
+        }
+
+        gsap.set(videoContainer, {
+          opacity: 1,
+          left: "50%",
+          top: "50%",
+          xPercent: -50,
+          yPercent: -50,
+          transformOrigin: "center center"
+        });
+
+        // 1. Pinning Logic
+        ScrollTrigger.create({
           trigger: section,
           start: "top top",
-          end: `+=${totalDistance}`, 
+          end: `+=${pinDistance}`,
+          pin: true,
+          pinSpacing: true,
           scrub: true,
-        },
+        });
+
+        // Main Timeline
+        const mainTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: `+=${totalDistance}`, 
+            scrub: true,
+          },
+        });
+
+        // A. Video Animation (Shrink)
+        mainTl.to(videoContainer, {
+          width: isMobile ? "70vw" : "50vw",
+          borderRadius: isMobile ? "12px" : "24px",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        // B. Video Animation (Exit - Moving out of viewport)
+        .to(videoContainer, {
+          yPercent: -150, 
+          opacity: 0,
+          duration: 1,
+          ease: "power2.in"
+        })
+
+        // C. Header Text Appearance (Starts when video is "50% gone" from viewport)
+        // Since the video exit duration is 1, starting at the middle of it is 0.5 into it.
+        // The previous step (shrink) took 1. The exit starts at 1. 
+        // So we start the header at 1.5.
+        .to(text, {
+          opacity: 1,
+          filter: "blur(0px)",
+          scale: 1,
+          duration: 1,
+          ease: "power2.out"
+        }, 1.5) 
+
+        // D. Box Movement (Starts when video has fully left screen)
+        // The video exit animation ends at duration 2 (1 for shrink + 1 for exit).
+        .to(box1, {
+          x: "100vw", 
+          duration: 3,
+          ease: "none",
+        }, 2) 
+        .to(box2, {
+          x: "-100vw", 
+          duration: 3,
+          ease: "none",
+        }, 2)
+
+        // E. Text Fade Out
+        .to(text, {
+          opacity: 0,
+          filter: "blur(20px)",
+          scale: 1.1,
+          duration: 1,
+        }, ">");
+
+        return () => {};
       });
-
-      // A. Video Animation (Shrink and leave)
-      mainTl.to(videoContainer, {
-        width: "60%",
-        height: "35%",
-        borderRadius: "24px",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(videoContainer, {
-        yPercent: -150, // Move it out of viewport using percent for consistency
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.in"
-      })
-
-      // B. Header Text Appearance (after video leaves)
-      .to(text, {
-        opacity: 1,
-        filter: "blur(0px)",
-        scale: 1,
-        duration: 0.8,
-        ease: "power2.out"
-      }, ">-0.4") // Start slightly before video fully disappears
-
-      // C. Box Movement (Crossing)
-      const boxDuration = 3;
-      mainTl.to(box1, {
-        x: "100vw", 
-        duration: boxDuration,
-        ease: "none",
-      }, ">")
-      .to(box2, {
-        x: "-100vw", 
-        duration: boxDuration,
-        ease: "none",
-      }, "<") // Start at the same time as box1
-        
-      // D. Text Fade Out (at the end of pin)
-      const fadeStartTime = (pinDistance / totalDistance) * (1 + 0.8 + 0.8 + boxDuration);
-      // Actually let's just use the timeline flow
-
-      mainTl.to(text, {
-        opacity: 0,
-        filter: "blur(20px)",
-        scale: 1.1,
-        duration: 1,
-      }, ">");
 
     }, sectionRef);
 
@@ -133,7 +159,7 @@ export default function Philosophy() {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover aspect-video"
         >
           <source src="/video/video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -141,7 +167,7 @@ export default function Philosophy() {
       </div>
 
       {/* Centered Text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
         <h2
           ref={textRef}
           className="text-5xl md:text-7xl lg:text-9xl font-bold text-center leading-tight max-w-6xl px-4 bg-clip-text text-transparent bg-linear-to-b from-white to-white/50"
