@@ -44,26 +44,28 @@ export default function Philosophy() {
         // Initial state adjustments for landscape video
         if (isMobile) {
           gsap.set(videoContainer, { 
-            width: "95vw", 
-            height: "auto",
-            aspectRatio: "16/9",
-            borderRadius: "20px",
+            width: "100vw", 
+            height: "100vh",
+            borderRadius: "0px",
           });
         } else {
           gsap.set(videoContainer, { 
-            width: "80vw", 
-            height: "auto",
-            aspectRatio: "16/9",
-            borderRadius: "40px", 
+            width: "100vw", 
+            height: "100vh",
+            borderRadius: "0px", 
           });
         }
 
+        // A. Background Video state
         gsap.set(videoContainer, {
-          opacity: 1,
-          left: "50%",
-          top: "50%",
-          xPercent: -50,
-          yPercent: -50,
+          width: "100%",
+          height: "100%",
+          borderRadius: "0px",
+          opacity: 0.6, // Lower opacity to make text and boxes more visible
+          left: 0,
+          top: 0,
+          xPercent: 0,
+          yPercent: 0,
           transformOrigin: "center center"
         });
 
@@ -87,45 +89,26 @@ export default function Philosophy() {
           },
         });
 
-        // A. Video Animation (Shrink)
-        mainTl.to(videoContainer, {
-          width: isMobile ? "70vw" : "50vw",
-          borderRadius: isMobile ? "12px" : "24px",
-          duration: 1,
-          ease: "power2.inOut"
-        })
-        // B. Video Animation (Exit - Moving out of viewport)
-        .to(videoContainer, {
-          yPercent: -150, 
-          opacity: 0,
-          duration: 1,
-          ease: "power2.in"
-        })
-
-        // C. Header Text Appearance (Starts when video is "50% gone" from viewport)
-        // Since the video exit duration is 1, starting at the middle of it is 0.5 into it.
-        // The previous step (shrink) took 1. The exit starts at 1. 
-        // So we start the header at 1.5.
-        .to(text, {
+        // C. Header Text Appearance
+        mainTl.to(text, {
           opacity: 1,
           filter: "blur(0px)",
           scale: 1,
           duration: 1,
           ease: "power2.out"
-        }, 1.5) 
+        }) 
 
-        // D. Box Movement (Starts when video has fully left screen)
-        // The video exit animation ends at duration 2 (1 for shrink + 1 for exit).
+        // D. Box Movement
         .to(box1, {
           x: "100vw", 
           duration: 3,
           ease: "none",
-        }, 2) 
+        }, ">") 
         .to(box2, {
           x: "-100vw", 
           duration: 3,
           ease: "none",
-        }, 2)
+        }, "<")
 
         // E. Text Fade Out
         .to(text, {
@@ -149,17 +132,18 @@ export default function Philosophy() {
       id="philosophy"
       className="relative w-full min-h-screen flex flex-col items-center justify-center bg-neutral-900 text-white overflow-hidden z-10"
     >
-      {/* Video Background/Foreground Section */}
+      {/* Video Background Section */}
       <div 
         ref={videoRef}
-        className="absolute z-30 flex items-center justify-center overflow-hidden"
+        className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
       >
+        <div className="absolute inset-0 bg-black/40 z-10" /> {/* Dark overlay to improve readability */}
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover aspect-video"
+          className="w-full h-full object-cover"
         >
           <source src="/video/video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -167,17 +151,17 @@ export default function Philosophy() {
       </div>
 
       {/* Centered Text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
         <h2
           ref={textRef}
-          className="text-5xl md:text-7xl lg:text-9xl font-bold text-center leading-tight max-w-6xl px-4 bg-clip-text text-transparent bg-linear-to-b from-white to-white/50"
+          className="text-5xl md:text-7xl lg:text-9xl font-bold text-center leading-tight max-w-6xl px-4 bg-clip-text text-transparent bg-linear-to-b from-white to-white/60 drop-shadow-2xl"
         >
           Bringing excellence into existence
         </h2>
       </div>
 
       {/* Container for Boxes - Centered */}
-      <div className="absolute inset-0 flex items-center justify-center w-full h-full pointer-events-none">
+      <div className="absolute inset-0 flex items-center justify-center w-full h-full pointer-events-none z-20">
         
         {/* Box 1 - Inside Skorbit Labs - Z-Index 20 (Top) */}
         <div
