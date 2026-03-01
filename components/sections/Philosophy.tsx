@@ -173,7 +173,7 @@ export default function Philosophy() {
         {/* Box 1 - Inside Skorbit Labs - Z-Index 20 (Top) */}
         <div
           ref={box1Ref}
-          className="absolute w-80 md:w-96 p-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl z-20"
+          className="absolute w-80 md:w-96 p-8 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl z-20"
         >
           <h3 className="text-2xl font-bold mb-2 text-white">Inside Skorbit Labs</h3>
           <div className="h-1 w-12 bg-purple-500 rounded-full mb-4" />
@@ -185,7 +185,7 @@ export default function Philosophy() {
         {/* Box 2 - About Ourselves - Z-Index 10 (Bottom) */}
         <div
           ref={box2Ref}
-          className="absolute w-80 md:w-96 p-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl z-10"
+          className="absolute w-80 md:w-96 p-8 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl z-10"
         >
           <h3 className="text-2xl font-bold mb-2 text-white">Our Essence</h3>
           <div className="h-1 w-12 bg-blue-500 rounded-full mb-4" />
