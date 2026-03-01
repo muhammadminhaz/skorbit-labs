@@ -75,6 +75,7 @@ export default function Philosophy() {
           transformOrigin: "center center"
         });
 
+
         // 1. Pinning Logic
         ScrollTrigger.create({
           trigger: section,

@@ -3,17 +3,45 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useLayoutEffect, useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export default function Hero() {
+  const heroRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to(contentRef.current, {
+        filter: "blur(20px)",
+        opacity: 0,
+        scale: 0.9,
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="hero" className="sticky top-0 z-0 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-neutral-950 text-white pt-20">
+    <section id="hero" ref={heroRef} className="hero-container sticky top-0 z-0 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-neutral-950 text-white pt-20">
         {/* Background Effects */}
         <div className="absolute inset-0 z-0 pointer-events-none">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] will-change-transform" />
             <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]" />
         </div>
 
-        <div className="container relative z-10 px-4 flex flex-col items-center text-center gap-8">
+        <div ref={contentRef} className="hero-content container relative z-10 px-4 flex flex-col items-center text-center gap-8">
             {/* Status Chip */}
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
