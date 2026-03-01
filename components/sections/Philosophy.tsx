@@ -25,8 +25,8 @@ export default function Philosophy() {
     if (!section || !videoContainer || !text || !box1 || !box2) return;
 
     const ctx = gsap.context(() => {
-      const pinDistance = 4000; 
-      const totalDistance = 6000; 
+      const pinDistance = 1000;
+      const totalDistance = 2000;
 
       const mm = gsap.matchMedia();
 
@@ -38,8 +38,14 @@ export default function Philosophy() {
 
         // Reset positions and initial states inside matchMedia
         gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
-        gsap.set(box1, { x: "-50vw", yPercent: 20, xPercent: -50 });
-        gsap.set(box2, { x: "50vw", yPercent: -80, xPercent: 50 });
+        
+        if (isMobile) {
+          gsap.set(box1, { left: "50%", x: 0, xPercent: -50, yPercent: -50, y: "-100vh" });
+          gsap.set(box2, { left: "50%", x: 0, xPercent: -50, yPercent: -50, y: "100vh" });
+        } else {
+          gsap.set(box1, { left: "50%", x: "-20vw", y: "-70vh", xPercent: -50, yPercent: -50 });
+          gsap.set(box2, { left: "50%", x: "20vw", y: "100vh", xPercent: -50, yPercent: -50 });
+        }
 
         // Initial state adjustments for landscape video
         if (isMobile) {
@@ -99,19 +105,19 @@ export default function Philosophy() {
         }) 
 
         // D. Box Movement
-        .to(box1, {
-          x: "100vw", 
+        mainTl.to(box1, {
+          y: isMobile ? "120vh" : "200vh", 
           duration: 3,
           ease: "none",
         }, ">") 
         .to(box2, {
-          x: "-100vw", 
+          y: isMobile ? "-120vh" : "-200vh", 
           duration: 3,
           ease: "none",
         }, "<")
 
         // E. Text Fade Out
-        .to(text, {
+        mainTl.to(text, {
           opacity: 0,
           filter: "blur(20px)",
           scale: 1.1,
