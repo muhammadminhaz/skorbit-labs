@@ -32,7 +32,7 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
     return (
         <div
             ref={cardRef}
-            className="relative group flex flex-col h-full bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden transition-transform duration-100 ease-out z-10"
+            className="relative group flex flex-col h-full bg-slate-900/60 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden transition-transform duration-100 ease-out z-10"
         >
             {/* Border Glow Effect */}
             <div
@@ -48,7 +48,7 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
 
             {/* Card Content */}
             <div className="relative z-10 p-6 flex flex-col h-full bg-linear-to-br from-slate-900/90 via-blue-950/30 to-slate-900/90 text-white">
-                <div className="mb-6 p-3 bg-blue-500/10 w-fit rounded-lg text-blue-400 group-hover:text-blue-300 group-hover:bg-blue-500/20 transition-colors duration-300">
+                <div className="mb-6 p-3 bg-blue-500/20 w-fit rounded-lg text-blue-400 group-hover:text-blue-300 group-hover:bg-blue-500/30 transition-colors duration-300">
                     {icon}
                 </div>
 
@@ -61,7 +61,7 @@ const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardP
                 </p>
 
                 {/* Decorative background element */}
-                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-colors duration-500" />
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl group-hover:bg-blue-600/30 transition-colors duration-500" />
             </div>
         </div>
     );
@@ -142,7 +142,7 @@ export default function Process() {
             onMouseMove={handleMouseMove}
         >
             {/* Background Gradient */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-blue-900/10 via-slate-950 to-slate-950 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 pointer-events-none" />
 
             <div className="w-full max-w-[95%] mx-auto px-4 relative z-10" ref={containerRef}>
                 <div className="mb-32 text-center">
