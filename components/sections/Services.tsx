@@ -199,7 +199,7 @@ function DiscoverItem() {
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group sticky bottom-0 z-30 bg-neutral-950 border-t border-neutral-800 cursor-default overflow-hidden"
+      className="group bottom-0 z-30 bg-neutral-950 border-t border-neutral-800 cursor-default overflow-hidden"
     >
       {/* Background Image */}
       <motion.div
