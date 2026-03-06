@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useRef, useState, useEffect } from "react";
+import CurtainMenu from "./CurtainMenu";
 
 interface GlowBlockProps {
   children: React.ReactNode;
@@ -80,6 +81,7 @@ export default function Navbar() {
   const [isHovered, setIsHovered] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isCurtainOpen, setIsCurtainOpen] = useState(false);
 
   const sectionColors: Record<string, string> = {
     hero: "rgba(239, 68, 68, 0.8), rgba(153, 27, 27, 0.8)", // Red
@@ -225,6 +227,8 @@ export default function Navbar() {
               containerHovered={isHovered}
               shape="circle"
               glowColor={currentGlowColor}
+              onClick={() => setIsCurtainOpen(true)}
+              className="cursor-pointer"
             >
               <div className="grid grid-cols-3 gap-1 group/dots">
                 {[...Array(9)].map((_, i) => {
@@ -256,6 +260,7 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+      <CurtainMenu isOpen={isCurtainOpen} onClose={() => setIsCurtainOpen(false)} />
     </div>
   );
 }

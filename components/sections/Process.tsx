@@ -146,7 +146,7 @@ export default function Process() {
 
             <div className="w-full max-w-[95%] mx-auto px-4 relative z-10" ref={containerRef}>
                 <div className="mb-32 text-center">
-                    <h2 ref={titleRef} className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
+                    <h2 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-300 mb-6">
                         Our Process
                     </h2>
                     <p ref={textRef} className="text-slate-400 max-w-2xl mx-auto text-lg">

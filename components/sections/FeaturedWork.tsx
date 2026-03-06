@@ -239,7 +239,7 @@ export default function FeaturedWork() {
         <div className="container px-4 mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                 <div ref={titleRef}>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-4">Featured Work</h2>
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-300 mb-4">Featured Work</h2>
                     <p className="text-lg text-neutral-400 max-w-xl">
                         We build digital products that define brands and drive growth. Here are a few of our favorites.
                     </p>

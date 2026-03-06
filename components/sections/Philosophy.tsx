@@ -161,7 +161,7 @@ export default function Philosophy() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
         <h2
           ref={textRef}
-          className="text-5xl md:text-7xl lg:text-9xl font-bold text-center leading-tight max-w-6xl px-4 bg-clip-text text-transparent bg-linear-to-b from-white to-white/60 drop-shadow-2xl"
+          className="text-4xl md:text-6xl lg:text-8xl font-bold text-center leading-tight max-w-6xl px-4 bg-clip-text text-transparent bg-linear-to-b from-white via-blue-100 to-blue-400 drop-shadow-2xl"
         >
           Bringing excellence into existence
         </h2>

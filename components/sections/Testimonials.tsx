@@ -136,7 +136,7 @@ export default function Testimonials() {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-4xl mb-20 text-center mx-auto">
-                    <h2 ref={titleRef} className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
+                    <h2 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-300 mb-6">
                         Testimonials
                     </h2>
                     <p ref={textRef} className="text-xl text-neutral-400 max-w-3xl mx-auto">

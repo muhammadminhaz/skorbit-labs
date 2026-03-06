@@ -174,7 +174,7 @@ export default function Footer() {
               <div className="relative z-10 grow flex flex-col p-6 md:p-12">
                 {/* Top Sub-Container */}
                 <div ref={titleRef} className={`relative ${shapeClass} bg-linear-to-br from-blue-400/20 to-blue-400 backdrop-blur-lg p-12 md:p-20 flex flex-col items-center text-center -m-6 md:-m-12 mb-12`}>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-white to-white/60 mb-6">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-200 mb-6">
                         Join the thrill
                     </h2>
                     <MagneticButton className="text-lg cursor-pointer">Let's Talk</MagneticButton>
