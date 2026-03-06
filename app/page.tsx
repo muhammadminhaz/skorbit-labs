@@ -1,14 +1,13 @@
+import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/sections/Hero";
-import Philosophy from "@/components/sections/Philosophy";
-import Services from "@/components/sections/Services";
-import Process from "@/components/sections/Process";
-import WhySkorbit from "@/components/sections/WhySkorbit";
-import CTA from "@/components/sections/CTA";
-import Footer from "@/components/sections/Footer";
-import FeaturedWork from "@/components/sections/FeaturedWork";
-import Testimonials from "@/components/sections/Testimonials";
-import Introduction from "@/components/sections/Introduction";
+
+const Philosophy = dynamic(() => import("@/components/sections/Philosophy"));
+const Services = dynamic(() => import("@/components/sections/Services"));
+const Process = dynamic(() => import("@/components/sections/Process"));
+const FeaturedWork = dynamic(() => import("@/components/sections/FeaturedWork"));
+const Testimonials = dynamic(() => import("@/components/sections/Testimonials"));
+const Footer = dynamic(() => import("@/components/sections/Footer"));
 
 export default function Home() {
     return (
