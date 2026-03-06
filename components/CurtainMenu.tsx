@@ -71,8 +71,9 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
         >
           {/* Background decorative elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]" />
-            <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-red-600/10 rounded-full blur-[100px]" />
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-blue-400/10 rounded-full blur-[100px] animate-pulse delay-700" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05)_0%,transparent_70%)]" />
           </div>
 
           {/* Close button */}
@@ -105,9 +106,9 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
                     >
                       <div className="flex items-baseline gap-4 group">
                         <span className="text-white/20 text-sm font-mono group-hover:text-white/60 transition-colors">0{i + 1}</span>
-                        <span className="text-4xl md:text-7xl font-bold text-white group-hover:translate-x-4 transition-transform duration-500 flex items-center gap-4">
+                        <span className="text-4xl md:text-6xl lg:text-7xl font-bold text-white group-hover:translate-x-4 transition-transform duration-500 flex items-center gap-4 bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-300">
                           {link.name}
-                          <ArrowRight className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500" size={40} />
+                          <ArrowRight className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 text-blue-300" size={40} />
                         </span>
                       </div>
                       <span className="ml-12 md:ml-20 text-white/40 text-sm md:text-lg group-hover:text-white/70 transition-colors">
@@ -139,7 +140,7 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
 
               <motion.div custom={7} variants={linkVariants}>
                 <span className="text-white/40 text-xs font-semibold uppercase tracking-widest block mb-4">Say Hello</span>
-                <a href="mailto:hello@skorbitlabs.com" className="text-xl md:text-2xl font-medium text-white hover:text-blue-400 transition-colors">
+                <a href="mailto:hello@skorbitlabs.com" className="text-xl md:text-2xl font-medium text-white hover:text-blue-300 transition-colors bg-clip-text text-transparent bg-linear-to-r from-white to-blue-300">
                   hello@skorbitlabs.com
                 </a>
               </motion.div>
@@ -155,9 +156,9 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
           </div>
 
           {/* Footer of curtain */}
-          <div className="p-8 md:p-12 flex justify-between items-center border-t border-white/5">
+          <div className="p-8 md:p-12 flex justify-between items-center border-t border-white/5 bg-linear-to-r from-transparent via-blue-500/5 to-transparent">
              <span className="text-white/20 text-xs">© 2026 Skorbit Labs. All rights reserved.</span>
-             <Link href="/" onClick={onClose} className="text-white/60 hover:text-white transition-colors text-sm font-bold tracking-tighter">
+             <Link href="/" onClick={onClose} className="text-white/60 hover:text-blue-300 transition-colors text-sm font-bold tracking-tighter">
                SKORBIT LABS
              </Link>
           </div>
