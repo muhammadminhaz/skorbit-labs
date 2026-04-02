@@ -39,7 +39,8 @@ export default function Hero() {
         <div 
           className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
         >
-          <div className="absolute inset-0 bg-black/50 z-10" /> {/* Dark overlay to improve readability */}
+          <div className="absolute inset-0 bg-black/60 z-10" /> {/* Darker overlay to improve readability */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_black_100%)] z-10 opacity-60" /> {/* Radial overlay to focus on center content */}
           <video
             autoPlay
             loop
@@ -72,7 +73,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight max-w-5xl bg-clip-text text-transparent bg-linear-to-b from-white via-blue-100 to-blue-400/80"
+                className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight max-w-5xl bg-clip-text text-transparent bg-linear-to-b from-white via-blue-100 to-blue-400/80 drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)]"
             >
                 From execution to distribution, we do it all
             </motion.h1>
@@ -82,7 +83,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto"
+                className="text-lg md:text-xl text-neutral-200 max-w-2xl mx-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] font-medium"
             >
                 Eliminating friction between product creation, market entry, and growth
             </motion.p>
