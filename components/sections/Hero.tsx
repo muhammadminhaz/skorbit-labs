@@ -35,10 +35,21 @@ export default function Hero() {
 
   return (
     <section id="hero" ref={heroRef} className="hero-container sticky top-0 z-0 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-neutral-950 text-white pt-20">
-        {/* Background Effects */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/30 rounded-full blur-[120px] will-change-transform" />
-            <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]" />
+        {/* Video Background Section */}
+        <div 
+          className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-black/50 z-10" /> {/* Dark overlay to improve readability */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/video/video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
 
         <div ref={contentRef} className="hero-content container relative z-10 px-4 flex flex-col items-center text-center gap-8">

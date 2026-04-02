@@ -10,19 +10,19 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 
 export default function Philosophy() {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLDivElement>(null);
+  const backgroundRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const box1Ref = useRef<HTMLDivElement>(null);
   const box2Ref = useRef<HTMLDivElement>(null);
 
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current;
-    const videoContainer = videoRef.current;
+    const backgroundContainer = backgroundRef.current;
     const text = textRef.current;
     const box1 = box1Ref.current;
     const box2 = box2Ref.current;
 
-    if (!section || !videoContainer || !text || !box1 || !box2) return;
+    if (!section || !backgroundContainer || !text || !box1 || !box2) return;
 
     const ctx = gsap.context(() => {
       const pinDistance = 1000;
@@ -47,27 +47,11 @@ export default function Philosophy() {
           gsap.set(box2, { left: "50%", x: "20vw", y: "100vh", xPercent: -50, yPercent: -50 });
         }
 
-        // Initial state adjustments for landscape video
-        if (isMobile) {
-          gsap.set(videoContainer, { 
-            width: "100vw", 
-            height: "100vh",
-            borderRadius: "0px",
-          });
-        } else {
-          gsap.set(videoContainer, { 
-            width: "100vw", 
-            height: "100vh",
-            borderRadius: "0px", 
-          });
-        }
-
-        // A. Background Video state
-        gsap.set(videoContainer, {
+        // A. Background state
+        gsap.set(backgroundContainer, {
           width: "100%",
           height: "100%",
-          borderRadius: "0px",
-          opacity: 0.8, // Lower opacity to make text and boxes more visible
+          opacity: 0.8,
           left: 0,
           top: 0,
           xPercent: 0,
@@ -139,22 +123,10 @@ export default function Philosophy() {
       id="philosophy"
       className="relative w-full min-h-screen flex flex-col items-center justify-center bg-neutral-900 text-white overflow-hidden z-10"
     >
-      {/* Video Background Section */}
-      <div 
-        ref={videoRef}
-        className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-black/50 z-10" /> {/* Dark overlay to improve readability */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source src="/video/video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+      {/* Background Effects */}
+      <div ref={backgroundRef} className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/30 rounded-full blur-[120px] will-change-transform" />
+          <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]" />
       </div>
 
       {/* Centered Text */}
