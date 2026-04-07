@@ -67,7 +67,8 @@ function ServiceItem({ service, index }: { service: typeof services[0], index: n
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative border-t border-neutral-800 cursor-default overflow-hidden"
+      onClick={() => setIsHovered(!isHovered)}
+      className="group relative border-t border-neutral-800 cursor-pointer overflow-hidden"
     >
       {/* Background Image */}
       <motion.div
@@ -171,8 +172,9 @@ function MagneticButton({ children, href }: { children: React.ReactNode, href: s
             initial={{ x: 0, y: 0 }}
             animate={{ x: position.x, y: position.y }}
             transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+            className="flex justify-center"
         >
-            <Link 
+            <Link
                 ref={ref}
                 href={href}
                 onMouseMove={handleMouseMove}
@@ -181,7 +183,7 @@ function MagneticButton({ children, href }: { children: React.ReactNode, href: s
                 className="group/btn relative overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-colors inline-block cursor-pointer"
             >
                 <span className="relative z-10 transition-colors duration-300 group-hover/btn:text-white">{children}</span>
-                <motion.div 
+                <motion.div
                     className="absolute inset-0 bg-sky-400 z-0"
                     initial={{ clipPath: "circle(0% at 0% 0%)" }}
                     animate={{ clipPath: isHovered ? "circle(150% at 0% 0%)" : "circle(0% at 0% 0%)" }}
@@ -199,7 +201,8 @@ function DiscoverItem() {
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group bottom-0 z-30 bg-neutral-950 border-t border-neutral-800 cursor-default overflow-hidden"
+      onClick={() => setIsHovered(!isHovered)}
+      className="group bottom-0 z-30 bg-neutral-950 border-t border-neutral-800 cursor-pointer overflow-hidden"
     >
       {/* Background Image */}
       <motion.div
@@ -220,7 +223,7 @@ function DiscoverItem() {
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="flex items-start justify-between gap-8">
             {/* Content */}
-            <div className="flex items-start flex-1">
+            <div className="flex items-start flex-1 w-full">
                 <div className="flex flex-col gap-4 w-full">
                     <motion.h3
                         className="text-3xl md:text-5xl lg:text-6xl font-bold max-w-3xl"
@@ -237,30 +240,6 @@ function DiscoverItem() {
                     >
                         Discover all capabilities
                     </motion.h3>
-                    
-                    {/* Button - Centered */}
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ 
-                            height: isHovered ? "auto" : 0,
-                            opacity: isHovered ? 1 : 0
-                        }}
-                        className="overflow-hidden w-full flex justify-center"
-                    >
-                        <motion.div 
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ 
-                                y: isHovered ? 0 : 20,
-                                opacity: isHovered ? 1 : 0
-                            }}
-                            transition={{ duration: 0.4, delay: 0.1 }}
-                            className="pt-6"
-                        >
-                            <MagneticButton href="/services">
-                                What we do
-                            </MagneticButton>
-                        </motion.div>
-                    </motion.div>
                 </div>
             </div>
 
@@ -272,6 +251,30 @@ function DiscoverItem() {
                 <Minus className={`w-6 h-6 absolute transition-all duration-300 ${isHovered ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`} />
             </motion.div>
         </div>
+
+        {/* Button - Centered, below the row on mobile */}
+        <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+                height: isHovered ? "auto" : 0,
+                opacity: isHovered ? 1 : 0
+            }}
+            className="overflow-hidden w-full"
+        >
+            <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{
+                    y: isHovered ? 0 : 20,
+                    opacity: isHovered ? 1 : 0
+                }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="pt-6 flex justify-center"
+            >
+                <MagneticButton href="/services">
+                    What we do
+                </MagneticButton>
+            </motion.div>
+        </motion.div>
       </div>
     </div>
   );
