@@ -43,31 +43,31 @@ export default function Hero() {
   const smoothMouseX = useSpring(mouseX, springConfig);
   const smoothMouseY = useSpring(mouseY, springConfig);
 
-  // Generate floating shapes on mount
+  // Generate floating shapes on mount - reduced count and size for subtler effect
   useEffect(() => {
     const generatedShapes: FloatingShape[] = [];
-    const shapeCount = 12;
+    const shapeCount = 6; // Reduced from 12
 
     for (let i = 0; i < shapeCount; i++) {
       const types: ("circle" | "square" | "ring")[] = ["circle", "square", "ring"];
       const colors = [
-        "rgba(14, 165, 233, 0.15)",   // sky-500
-        "rgba(168, 85, 247, 0.1)",    // purple-500
-        "rgba(56, 189, 248, 0.12)",   // sky-400
-        "rgba(99, 102, 241, 0.1)",    // indigo-500
+        "rgba(14, 165, 233, 0.08)",   // sky-500
+        "rgba(56, 189, 248, 0.08)",   // sky-400
+        "rgba(125, 211, 252, 0.08)",  // sky-300 - lighter blue
+        "rgba(3, 105, 161, 0.06)",    // sky-600 - deeper blue
       ];
 
       generatedShapes.push({
         id: i,
         type: types[Math.floor(Math.random() * types.length)],
-        x: 10 + Math.random() * 80, // percentage
-        y: 10 + Math.random() * 80,
-        size: 60 + Math.random() * 140,
-        depth: Math.random(), // 0-1 for parallax intensity
+        x: 15 + Math.random() * 70, // Keep away from edges
+        y: 15 + Math.random() * 70,
+        size: 30 + Math.random() * 60, // Smaller sizes: 30-90px instead of 60-200px
+        depth: Math.random() * 0.6, // Reduced max depth for subtler parallax
         color: colors[Math.floor(Math.random() * colors.length)],
         rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 0.5,
-        floatSpeed: 3 + Math.random() * 4,
+        rotationSpeed: (Math.random() - 0.5) * 0.3, // Slower rotation
+        floatSpeed: 4 + Math.random() * 3, // Slower float
         floatOffset: Math.random() * Math.PI * 2,
       });
     }
@@ -183,7 +183,7 @@ export default function Hero() {
           }}
         />
 
-        {/* Blob 2 - Purple */}
+        {/* Blob 2 - Light blue */}
         <motion.div
           animate={{
             x: ["10%", "-15%", "10%"],
@@ -197,12 +197,12 @@ export default function Hero() {
           }}
           className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%)",
             filter: "blur(100px)",
           }}
         />
 
-        {/* Blob 3 - Indigo */}
+        {/* Blob 3 - Sky blue */}
         <motion.div
           animate={{
             x: ["-5%", "5%", "-5%"],
@@ -215,7 +215,7 @@ export default function Hero() {
           }}
           className="absolute -bottom-1/4 left-1/4 w-[60vw] h-[60vw] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(125, 211, 252, 0.08) 0%, transparent 70%)",
             filter: "blur(90px)",
           }}
         />
@@ -257,7 +257,7 @@ export default function Hero() {
             >
               <motion.div
                 animate={{
-                  y: [0, -20, 0],
+                  y: [0, -12, 0], // Reduced from -20 to -12 for subtler float
                 }}
                 transition={{
                   duration: shape.floatSpeed,
@@ -340,20 +340,21 @@ export default function Hero() {
         ref={contentRef}
         className="hero-content container relative z-20 px-6 md:px-12 flex flex-col items-center text-center gap-8 max-w-6xl"
       >
-        {/* Logo Icon - Positioned as brand anchor */}
+        {/* Logo Icon - Enhanced and larger for emphasis */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
-          animate={isLoaded ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={isLoaded ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="relative"
+          className="relative mb-2"
         >
-          {/* Glow behind logo */}
-          <div className="absolute inset-0 bg-sky-500/30 blur-[40px] rounded-full scale-150" />
+          {/* Enhanced glow behind logo - all shades of blue */}
+          <div className="absolute inset-0 bg-sky-400/40 blur-[60px] rounded-full scale-[2]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-sky-300/20 to-sky-500/20 blur-[40px] rounded-full scale-150" />
 
-          {/* Logo container */}
+          {/* Logo container with only vertical movement */}
           <motion.div
             animate={{
-              y: [0, -8, 0],
+              y: [0, -10, 0],
             }}
             transition={{
               duration: 4,
@@ -365,25 +366,32 @@ export default function Hero() {
             <img
               src="/images/logo_icon.png"
               alt="Skorbit Labs"
-              className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_30px_rgba(14,165,233,0.4)]"
+              className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 object-contain drop-shadow-[0_0_50px_rgba(14,165,233,0.5)]"
             />
           </motion.div>
 
-          {/* Orbiting ring decoration */}
+          {/* 4 orbiting dots with different blue shades */}
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 -m-4"
+            className="absolute inset-0 -m-8 sm:-m-10"
           >
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-sky-400 rounded-full" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-white/60 rounded-full" />
+            {/* Dot 1 - Top - Lightest blue */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-sky-200 rounded-full shadow-[0_0_12px_rgba(186,230,253,0.9)]" />
+            {/* Dot 2 - Bottom - Medium blue */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-sky-400 rounded-full shadow-[0_0_10px_rgba(56,189,248,0.8)]" />
           </motion.div>
+
+          {/* Second ring with 2 more dots - rotating opposite direction */}
           <motion.div
             animate={{ rotate: -360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 -m-6"
+            className="absolute inset-0 -m-12 sm:-m-14"
           >
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-400/60 rounded-full" />
+            {/* Dot 3 - Left - Darker blue */}
+            <div className="absolute top-1/2 left-0 -translate-y-1/2 w-1.5 h-1.5 bg-sky-500 rounded-full shadow-[0_0_10px_rgba(14,165,233,0.8)]" />
+            {/* Dot 4 - Right - Deepest blue */}
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1.5 h-1.5 bg-sky-600 rounded-full shadow-[0_0_10px_rgba(2,132,199,0.8)]" />
           </motion.div>
         </motion.div>
 
@@ -401,12 +409,12 @@ export default function Hero() {
           <span className="text-sm font-medium text-neutral-300">Open for projects</span>
         </motion.div>
 
-        {/* Headline with character animation */}
+        {/* Headline with character animation - improved mobile sizing */}
         <motion.h1
           variants={containerVariants}
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[1.05]"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] px-2"
           style={{ perspective: "1000px" }}
         >
           {words.map((word, wordIndex) => (
@@ -428,25 +436,25 @@ export default function Hero() {
           ))}
         </motion.h1>
 
-        {/* Subheading */}
+        {/* Subheading - improved mobile responsiveness */}
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-lg md:text-xl lg:text-2xl text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed"
+          className="text-base sm:text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed px-4"
         >
           Eliminating friction between product creation, market entry, and growth
         </motion.p>
 
-        {/* CTA Buttons */}
+        {/* CTA Buttons - improved mobile layout */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4 w-full"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-4 w-full px-4 sm:px-0"
         >
           <Link href="/book" className="group w-full sm:w-auto flex justify-center">
-            <MagneticButton className="bg-white text-neutral-950 hover:bg-neutral-100 flex items-center justify-center gap-3 px-8 py-4 text-base font-medium shadow-[0_0_60px_rgba(255,255,255,0.15)] w-full sm:w-auto">
+            <MagneticButton className="bg-white text-neutral-950 hover:bg-neutral-100 flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-medium shadow-[0_0_60px_rgba(255,255,255,0.15)] w-full sm:w-auto">
               <span>Book a Call</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </MagneticButton>
@@ -456,7 +464,7 @@ export default function Hero() {
             <motion.button
               whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.08)" }}
               whileTap={{ scale: 0.98 }}
-              className="px-8 py-4 rounded-full bg-transparent border border-white/20 text-white font-medium transition-all duration-300 flex items-center justify-center gap-3 backdrop-blur-sm w-full sm:w-auto"
+              className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-transparent border border-white/20 text-white font-medium transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm w-full sm:w-auto text-sm sm:text-base"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Explore Our Work</span>
@@ -465,34 +473,34 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Bold Corner Frame Elements */}
-      <div className="absolute top-6 left-6 w-32 h-32 z-30 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-white/40 to-transparent" />
-        <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-white/40 to-transparent" />
-        <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-sky-400/60" />
+      {/* Subtle Corner Frame Elements - hidden on small mobile */}
+      <div className="absolute top-4 sm:top-6 left-4 sm:left-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-r from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 left-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-b from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 left-0 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 
-      <div className="absolute top-6 right-6 w-32 h-32 z-30 pointer-events-none">
-        <div className="absolute top-0 right-0 w-full h-[2px] bg-gradient-to-l from-white/40 to-transparent" />
-        <div className="absolute top-0 right-0 w-[2px] h-full bg-gradient-to-b from-white/40 to-transparent" />
-        <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-sky-400/60" />
+      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
+        <div className="absolute top-0 right-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-l from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 right-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-b from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 right-0 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 
-      <div className="absolute bottom-6 left-6 w-32 h-32 z-30 pointer-events-none">
-        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-white/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-[2px] h-full bg-gradient-to-t from-white/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-sky-400/60" />
+      <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
+        <div className="absolute bottom-0 left-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-r from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-t from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-3 sm:w-4 h-3 sm:h-4 border-l border-b sm:border-l-2 sm:border-b-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 
-      <div className="absolute bottom-6 right-6 w-32 h-32 z-30 pointer-events-none">
-        <div className="absolute bottom-0 right-0 w-full h-[2px] bg-gradient-to-l from-white/40 to-transparent" />
-        <div className="absolute bottom-0 right-0 w-[2px] h-full bg-gradient-to-t from-white/40 to-transparent" />
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-sky-400/60" />
+      <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
+        <div className="absolute bottom-0 right-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-l from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 right-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-t from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 right-0 w-3 sm:w-4 h-3 sm:h-4 border-r border-b sm:border-r-2 sm:border-b-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 
-      {/* Accent glow at corners */}
+      {/* Accent glow at corners - all blue */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-sky-500/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-sky-400/10 blur-[100px] rounded-full pointer-events-none" />
     </section>
   );
 }
