@@ -77,6 +77,8 @@ export default function Hero() {
 
   // Handle mouse move for parallax and spotlight
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    // Throttling or using requestAnimationFrame might be better, 
+    // but for now we'll just keep it simple and ensure it doesn't trigger heavy re-renders
     const rect = heroRef.current?.getBoundingClientRect();
     if (!rect) return;
 
@@ -87,15 +89,9 @@ export default function Hero() {
     mouseX.set(x - 0.5);
     mouseY.set(y - 0.5);
 
-    // Update spotlight position
+    // Update spotlight position directly via ref to avoid React state overhead
     if (spotlightRef.current) {
-      spotlightRef.current.style.background = `
-        radial-gradient(
-          600px circle at ${x * 100}% ${y * 100}%,
-          rgba(14, 165, 233, 0.08),
-          transparent 40%
-        )
-      `;
+      spotlightRef.current.style.transform = `translate3d(${(x * 100) - 50}%, ${(y * 100) - 50}%, 0)`;
     }
   }, [mouseX, mouseY]);
 
@@ -163,23 +159,23 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 z-0" />
 
       {/* Animated mesh gradient blobs */}
-      <div className="absolute inset-0 z-[1] overflow-hidden">
+      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
         {/* Blob 1 - Large cyan */}
         <motion.div
           animate={{
             x: ["-10%", "10%", "-10%"],
             y: ["-5%", "15%", "-5%"],
-            scale: [1, 1.2, 1],
+            scale: [1, 1.1, 1],
           }}
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: "linear",
           }}
-          className="absolute -top-1/4 -left-1/4 w-[80vw] h-[80vw] rounded-full"
+          className="absolute -top-1/4 -left-1/4 w-[80vw] h-[80vw] rounded-full will-change-transform"
           style={{
-            background: "radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%)",
-            filter: "blur(80px)",
+            background: "radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%)",
+            filter: "blur(60px)",
           }}
         />
 
@@ -188,17 +184,16 @@ export default function Hero() {
           animate={{
             x: ["10%", "-15%", "10%"],
             y: ["5%", "-10%", "5%"],
-            scale: [1.1, 1, 1.1],
           }}
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: "linear",
           }}
-          className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw] rounded-full"
+          className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw] rounded-full will-change-transform"
           style={{
-            background: "radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%)",
-            filter: "blur(100px)",
+            background: "radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%)",
+            filter: "blur(80px)",
           }}
         />
 
@@ -211,12 +206,12 @@ export default function Hero() {
           transition={{
             duration: 18,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: "linear",
           }}
-          className="absolute -bottom-1/4 left-1/4 w-[60vw] h-[60vw] rounded-full"
+          className="absolute -bottom-1/4 left-1/4 w-[60vw] h-[60vw] rounded-full will-change-transform"
           style={{
-            background: "radial-gradient(circle, rgba(125, 211, 252, 0.08) 0%, transparent 70%)",
-            filter: "blur(90px)",
+            background: "radial-gradient(circle, rgba(125, 211, 252, 0.06) 0%, transparent 70%)",
+            filter: "blur(70px)",
           }}
         />
       </div>
@@ -265,14 +260,14 @@ export default function Hero() {
                   ease: "easeInOut",
                   delay: shape.floatOffset,
                 }}
-                className="w-full h-full"
+                className="w-full h-full will-change-transform"
               >
                 {shape.type === "circle" && (
                   <div
                     className="w-full h-full rounded-full"
                     style={{
                       background: shape.color,
-                      boxShadow: `0 0 ${shape.size}px ${shape.color}`,
+                      boxShadow: `0 0 ${shape.size * 0.5}px ${shape.color}`, // Reduced shadow
                     }}
                   />
                 )}
@@ -281,16 +276,16 @@ export default function Hero() {
                     className="w-full h-full rotate-45"
                     style={{
                       background: shape.color,
-                      border: `1px solid rgba(255,255,255,0.1)`,
+                      border: `1px solid rgba(255,255,255,0.05)`, // More transparent border
                     }}
                   />
                 )}
                 {shape.type === "ring" && (
                   <div
-                    className="w-full h-full rounded-full border-2"
+                    className="w-full h-full rounded-full border-[1.5px]" // Thinner border
                     style={{
                       borderColor: shape.color,
-                      boxShadow: `0 0 ${shape.size * 0.3}px ${shape.color}`,
+                      boxShadow: `0 0 ${shape.size * 0.2}px ${shape.color}`, // Reduced shadow
                     }}
                   />
                 )}
@@ -303,13 +298,15 @@ export default function Hero() {
       {/* Interactive spotlight that follows cursor */}
       <div
         ref={spotlightRef}
-        className="absolute inset-0 z-[3] pointer-events-none transition-all duration-300"
+        className="absolute w-[1200px] h-[1200px] top-1/2 left-1/2 -mt-[600px] -ml-[600px] z-[3] pointer-events-none transition-transform duration-300 ease-out opacity-50 md:opacity-100"
         style={{
           background: `radial-gradient(
-            600px circle at 50% 50%,
-            rgba(14, 165, 233, 0.08),
-            transparent 40%
+            circle,
+            rgba(14, 165, 233, 0.1),
+            transparent 60%
           )`,
+          willChange: "transform",
+          transform: "translate3d(0,0,0)",
         }}
       />
 
@@ -345,11 +342,11 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={isLoaded ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mb-2"
+          className="relative mb-2 mt-12 sm:mt-0"
         >
           {/* Enhanced glow behind logo - all shades of blue */}
-          <div className="absolute inset-0 bg-sky-400/40 blur-[60px] rounded-full scale-[2]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-sky-300/20 to-sky-500/20 blur-[40px] rounded-full scale-150" />
+          <div className="absolute inset-0 bg-sky-400/30 blur-[60px] rounded-full scale-[2]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-sky-300/10 to-sky-500/10 blur-[40px] rounded-full scale-150" />
 
           {/* Logo container with only vertical movement */}
           <motion.div
@@ -361,12 +358,12 @@ export default function Hero() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="relative"
+            className="relative will-change-transform"
           >
             <img
               src="/images/logo_icon.png"
               alt="Skorbit Labs"
-              className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 object-contain drop-shadow-[0_0_50px_rgba(14,165,233,0.5)]"
+              className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 object-contain drop-shadow-[0_0_50px_rgba(14,165,233,0.3)]"
             />
           </motion.div>
 
@@ -374,24 +371,24 @@ export default function Hero() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 -m-8 sm:-m-10"
+            className="absolute inset-0 -m-8 sm:-m-10 will-change-transform"
           >
             {/* Dot 1 - Top - Lightest blue */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-sky-200 rounded-full shadow-[0_0_12px_rgba(186,230,253,0.9)]" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-sky-200 rounded-full shadow-[0_0_8px_rgba(186,230,253,0.7)]" />
             {/* Dot 2 - Bottom - Medium blue */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-sky-400 rounded-full shadow-[0_0_10px_rgba(56,189,248,0.8)]" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-sky-400 rounded-full shadow-[0_0_6px_rgba(56,189,248,0.6)]" />
           </motion.div>
 
           {/* Second ring with 2 more dots - rotating opposite direction */}
           <motion.div
             animate={{ rotate: -360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 -m-12 sm:-m-14"
+            className="absolute inset-0 -m-12 sm:-m-14 will-change-transform"
           >
             {/* Dot 3 - Left - Darker blue */}
-            <div className="absolute top-1/2 left-0 -translate-y-1/2 w-1.5 h-1.5 bg-sky-500 rounded-full shadow-[0_0_10px_rgba(14,165,233,0.8)]" />
+            <div className="absolute top-1/2 left-0 -translate-y-1/2 w-1.5 h-1.5 bg-sky-500 rounded-full shadow-[0_0_6px_rgba(14,165,233,0.6)]" />
             {/* Dot 4 - Right - Deepest blue */}
-            <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1.5 h-1.5 bg-sky-600 rounded-full shadow-[0_0_10px_rgba(2,132,199,0.8)]" />
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1.5 h-1.5 bg-sky-600 rounded-full shadow-[0_0_6px_rgba(2,132,199,0.6)]" />
           </motion.div>
         </motion.div>
 
