@@ -148,7 +148,7 @@ export default function Philosophy() {
           className="absolute w-80 md:w-96 p-8 rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl z-20"
         >
           <h3 className="text-2xl font-bold mb-2 text-white">Inside Skorbit Labs</h3>
-          <div className="h-1 w-12 bg-purple-500 rounded-full mb-4" />
+          <div className="h-1 w-12 bg-sky-400 rounded-full mb-4" />
           <p className="text-neutral-200">
             We are a collective of innovators, pushing the boundaries of digital experiences through code and design.
           </p>

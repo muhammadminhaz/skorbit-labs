@@ -3,7 +3,7 @@
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useLayoutEffect, useEffect, useRef, useState, useCallback } from "react";
+import { useLayoutEffect, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "@/components/ui/MagneticButton";
@@ -34,6 +34,10 @@ export default function Hero() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [shapes, setShapes] = useState<FloatingShape[]>([]);
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const prefersReducedMotion = useMemo(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    []
+  );
 
   // Mouse tracking for parallax
   const mouseX = useMotionValue(0);
@@ -159,10 +163,12 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 z-0" />
 
       {/* Animated mesh gradient blobs */}
-      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
+      {/* No overflow-hidden here — Chrome clips filter:blur at container boundary.
+          The parent section's overflow-hidden handles containment. */}
+      <div className="absolute inset-0 z-[1] pointer-events-none">
         {/* Blob 1 - Large cyan */}
         <motion.div
-          animate={{
+          animate={prefersReducedMotion ? {} : {
             x: ["-10%", "10%", "-10%"],
             y: ["-5%", "15%", "-5%"],
             scale: [1, 1.1, 1],
@@ -172,16 +178,16 @@ export default function Hero() {
             repeat: Infinity,
             ease: "linear",
           }}
-          className="absolute -top-1/4 -left-1/4 w-[80vw] h-[80vw] rounded-full will-change-transform"
+          className="absolute -top-1/4 -left-1/4 w-[80vw] h-[80vw]"
           style={{
-            background: "radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, transparent 65%)",
             filter: "blur(60px)",
           }}
         />
 
         {/* Blob 2 - Light blue */}
         <motion.div
-          animate={{
+          animate={prefersReducedMotion ? {} : {
             x: ["10%", "-15%", "10%"],
             y: ["5%", "-10%", "5%"],
           }}
@@ -190,16 +196,16 @@ export default function Hero() {
             repeat: Infinity,
             ease: "linear",
           }}
-          className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw] rounded-full will-change-transform"
+          className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw]"
           style={{
-            background: "radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 65%)",
             filter: "blur(80px)",
           }}
         />
 
         {/* Blob 3 - Sky blue */}
         <motion.div
-          animate={{
+          animate={prefersReducedMotion ? {} : {
             x: ["-5%", "5%", "-5%"],
             y: ["10%", "-5%", "10%"],
           }}
@@ -208,9 +214,9 @@ export default function Hero() {
             repeat: Infinity,
             ease: "linear",
           }}
-          className="absolute -bottom-1/4 left-1/4 w-[60vw] h-[60vw] rounded-full will-change-transform"
+          className="absolute -bottom-1/4 left-1/4 w-[60vw] h-[60vw]"
           style={{
-            background: "radial-gradient(circle, rgba(125, 211, 252, 0.06) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(125, 211, 252, 0.08) 0%, transparent 65%)",
             filter: "blur(70px)",
           }}
         />
@@ -251,8 +257,8 @@ export default function Hero() {
               }}
             >
               <motion.div
-                animate={{
-                  y: [0, -12, 0], // Reduced from -20 to -12 for subtler float
+                animate={prefersReducedMotion ? {} : {
+                  y: [0, -12, 0],
                 }}
                 transition={{
                   duration: shape.floatSpeed,
@@ -350,7 +356,7 @@ export default function Hero() {
 
           {/* Logo container with only vertical movement */}
           <motion.div
-            animate={{
+            animate={prefersReducedMotion ? {} : {
               y: [0, -10, 0],
             }}
             transition={{
@@ -369,7 +375,7 @@ export default function Hero() {
 
           {/* 4 orbiting dots with different blue shades */}
           <motion.div
-            animate={{ rotate: 360 }}
+            animate={prefersReducedMotion ? {} : { rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             className="absolute inset-0 -m-8 sm:-m-10 will-change-transform"
           >
@@ -381,7 +387,7 @@ export default function Hero() {
 
           {/* Second ring with 2 more dots - rotating opposite direction */}
           <motion.div
-            animate={{ rotate: -360 }}
+            animate={prefersReducedMotion ? {} : { rotate: -360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
             className="absolute inset-0 -m-12 sm:-m-14 will-change-transform"
           >

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
+import { motion, useMotionValue, useMotionTemplate, useReducedMotion } from "framer-motion";
 import { Search, BarChart2, Code, Rocket } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,72 +12,66 @@ interface ProcessCardProps {
     title: string;
     description: string;
     icon: React.ReactNode;
-    index: number;
-    mousePos: { x: number; y: number };
 }
 
-const ProcessCard = ({ title, description, icon, index, mousePos }: ProcessCardProps) => {
-    const cardRef = useRef<HTMLDivElement>(null);
-    const [localMousePos, setLocalMousePos] = useState({ x: -1000, y: -1000 });
+const ProcessCard = ({ title, description, icon }: ProcessCardProps) => {
+    const mouseX = useMotionValue(-1000);
+    const mouseY = useMotionValue(-1000);
+    const gradient = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(14, 165, 233, 0.6), transparent 40%)`;
 
-    useEffect(() => {
-        if (cardRef.current) {
-            const rect = cardRef.current.getBoundingClientRect();
-            setLocalMousePos({
-                x: mousePos.x - rect.left,
-                y: mousePos.y - rect.top,
-            });
-        }
-    }, [mousePos]);
+    function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        mouseX.set(e.clientX - rect.left);
+        mouseY.set(e.clientY - rect.top);
+    }
 
     return (
         <div
-            ref={cardRef}
-            className="relative group flex flex-col h-full bg-slate-900/60 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden transition-transform duration-100 ease-out z-10"
+            onPointerMove={onPointerMove}
+            onPointerLeave={() => { mouseX.set(-1000); mouseY.set(-1000); }}
+            className="relative group flex flex-col h-full bg-slate-900/60 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden z-10"
         >
-            {/* Border Glow Effect */}
-            <div
+            {/* Border glow — driven by motion value, no re-renders */}
+            <motion.div
                 className="absolute inset-0 pointer-events-none rounded-xl z-20"
                 style={{
-                    padding: '1px',
-                    background: `radial-gradient(600px circle at ${localMousePos.x}px ${localMousePos.y}px, rgba(96, 165, 250, 0.8), transparent 40%)`,
-                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    WebkitMaskComposite: 'destination-out',
-                    maskComposite: 'exclude',
+                    padding: "1px",
+                    background: gradient,
+                    WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                    WebkitMaskComposite: "destination-out",
+                    maskComposite: "exclude",
                 }}
             />
 
-            {/* Card Content */}
             <div className="relative z-10 p-6 flex flex-col h-full bg-linear-to-br from-slate-900/90 via-blue-950/30 to-slate-900/90 text-white">
-                <div className="mb-6 p-3 bg-blue-500/20 w-fit rounded-lg text-blue-400 group-hover:text-blue-300 group-hover:bg-blue-500/30 transition-colors duration-300">
+                <div className="mb-6 p-3 bg-sky-500/20 w-fit rounded-lg text-sky-400 group-hover:text-sky-300 group-hover:bg-sky-500/30 transition-colors duration-300">
                     {icon}
                 </div>
 
-                <h3 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-linear-to-r from-blue-200 to-blue-400">
-                    {index + 1}. {title}
+                <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-sky-300 transition-colors duration-300">
+                    {title}
                 </h3>
 
                 <p className="text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors duration-300">
                     {description}
                 </p>
 
-                {/* Decorative background element */}
-                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl group-hover:bg-blue-600/30 transition-colors duration-500" />
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-sky-600/15 rounded-full blur-3xl group-hover:bg-sky-600/25 transition-colors duration-500" />
             </div>
         </div>
     );
 };
 
 export default function Process() {
-    const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
     const containerRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLHeadingElement>(null);
     const textRef = useRef<HTMLParagraphElement>(null);
     const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const reduceMotion = useReducedMotion();
 
     useEffect(() => {
+        if (reduceMotion) return;
         const ctx = gsap.context(() => {
-            // Animate title and text
             gsap.from([titleRef.current, textRef.current], {
                 opacity: 0,
                 y: 50,
@@ -85,10 +80,9 @@ export default function Process() {
                 scrollTrigger: {
                     trigger: titleRef.current,
                     start: "top 80%",
-                }
+                },
             });
 
-            // Animate process cards
             cardsRef.current.forEach((card, index) => {
                 if (card) {
                     gsap.from(card, {
@@ -99,18 +93,14 @@ export default function Process() {
                         scrollTrigger: {
                             trigger: card,
                             start: "top 85%",
-                        }
+                        },
                     });
                 }
             });
         }, containerRef);
 
         return () => ctx.revert();
-    }, []);
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        setMousePos({ x: e.clientX, y: e.clientY });
-    };
+    }, [reduceMotion]);
 
     const processes = [
         {
@@ -139,14 +129,12 @@ export default function Process() {
         <section
             id="process"
             className="relative z-20 min-h-screen py-20 flex flex-col justify-center bg-slate-950 overflow-hidden"
-            onMouseMove={handleMouseMove}
         >
-            {/* Background Gradient */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-sky-900/20 via-slate-950 to-slate-950 pointer-events-none" />
 
             <div className="w-full max-w-[95%] mx-auto px-4 relative z-10" ref={containerRef}>
                 <div className="mb-32 text-center">
-                    <h2 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-300 mb-6">
+                    <h2 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-sky-50 to-sky-300 mb-6">
                         Our Process
                     </h2>
                     <p ref={textRef} className="text-slate-400 max-w-2xl mx-auto text-lg">
@@ -155,67 +143,33 @@ export default function Process() {
                 </div>
 
                 <div className="relative py-10">
-                    {/* Sine Wave SVG Connector - Desktop Only */}
+                    {/* Sine wave connector — desktop only */}
                     <div className="hidden lg:block absolute top-0 left-0 w-full h-full pointer-events-none z-0">
-                        <svg
-                            className="w-full h-full overflow-visible"
-                            viewBox="0 0 100 100"
-                            preserveAspectRatio="none"
-                        >
+                        <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                             <defs>
                                 <filter id="line-glow" x="-50%" y="-50%" width="200%" height="200%">
                                     <feGaussianBlur stdDeviation="2" result="blur" />
                                     <feComposite in="SourceGraphic" in2="blur" operator="over" />
                                 </filter>
-
                                 <mask id="cardMask">
                                     <rect x="0" y="0" width="100" height="100" fill="white" />
-                                    {/* Masking areas for cards - matching the card positions */}
                                     <rect x="2.5" y="20" width="20" height="60" fill="black" />
                                     <rect x="27.5" y="0" width="20" height="60" fill="black" />
                                     <rect x="52.5" y="40" width="20" height="60" fill="black" />
                                     <rect x="77.5" y="20" width="20" height="60" fill="black" />
                                 </mask>
                             </defs>
-
-                            {/*
-                Continuous Path:
-                Card 1 (Baseline): Center ~12.5, 50. Right Edge ~20, 50.
-                Card 2 (Up): Center ~37.5, 30. Left Edge ~30, 30. Right Edge ~45, 30.
-                Card 3 (Down): Center ~62.5, 70. Left Edge ~55, 70. Right Edge ~70, 70.
-                Card 4 (Baseline): Center ~87.5, 50. Left Edge ~80, 50.
-              */}
-
                             <g mask="url(#cardMask)">
-                                {/* Base Path (subtle background) */}
                                 <path
                                     d="M 12.5 50 L 20 50 C 25 50, 25 30, 30 30 L 45 30 C 50 30, 50 70, 55 70 L 70 70 C 75 70, 75 50, 80 50 L 87.5 50"
-                                    fill="none"
-                                    stroke="#1e3a8a"
-                                    strokeWidth="2"
-                                    vectorEffect="non-scaling-stroke"
-                                    className="opacity-30"
+                                    fill="none" stroke="#0c4a6e" strokeWidth="2" vectorEffect="non-scaling-stroke" className="opacity-30"
                                 />
-
-                                {/* Animated Glow Traveling Along Path */}
                                 <path
                                     d="M 12.5 50 L 20 50 C 25 50, 25 30, 30 30 L 45 30 C 50 30, 50 70, 55 70 L 70 70 C 75 70, 75 50, 80 50 L 87.5 50"
-                                    fill="none"
-                                    stroke="#60A5FA"
-                                    strokeWidth="3"
-                                    vectorEffect="non-scaling-stroke"
-                                    filter="url(#line-glow)"
-                                    strokeDasharray="15 85"
-                                    strokeLinecap="round"
-                                    className="opacity-90"
+                                    fill="none" stroke="#38bdf8" strokeWidth="3" vectorEffect="non-scaling-stroke"
+                                    filter="url(#line-glow)" strokeDasharray="15 85" strokeLinecap="round" className="opacity-90"
                                 >
-                                    <animate
-                                        attributeName="stroke-dashoffset"
-                                        from="100"
-                                        to="0"
-                                        dur="4s"
-                                        repeatCount="indefinite"
-                                    />
+                                    <animate attributeName="stroke-dashoffset" from="100" to="0" dur="4s" repeatCount="indefinite" />
                                 </path>
                             </g>
                         </svg>
@@ -227,21 +181,14 @@ export default function Process() {
                                 key={index}
                                 className={`relative h-full transition-transform duration-500 flex justify-center ${
                                     index === 1 ? "lg:-translate-y-20" :
-                                        index === 2 ? "lg:translate-y-20" : ""
+                                    index === 2 ? "lg:translate-y-20" : ""
                                 }`}
                             >
-                                {/* Card Wrapper */}
                                 <div className="w-full lg:w-[80%] h-full" ref={el => { cardsRef.current[index] = el; }}>
-                                    <ProcessCard
-                                        {...process}
-                                        index={index}
-                                        mousePos={mousePos}
-                                    />
+                                    <ProcessCard {...process} />
                                 </div>
-
-                                {/* Connector Line (Mobile/Tablet) */}
                                 {index < processes.length - 1 && (
-                                    <div className="lg:hidden absolute left-1/2 -bottom-12 w-px h-12 bg-linear-to-b from-blue-500/50 to-blue-500/50 z-0 transform -translate-x-1/2" />
+                                    <div className="lg:hidden absolute left-1/2 -bottom-12 w-px h-12 bg-linear-to-b from-sky-500/50 to-sky-500/50 z-0 -translate-x-1/2" />
                                 )}
                             </div>
                         ))}

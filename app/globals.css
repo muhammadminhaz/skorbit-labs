@@ -1,8 +1,68 @@
 @import "tailwindcss";
 
+@theme {
+  --font-heading: 'Outfit', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-label:   'Space Grotesk', sans-serif;
+}
+
+:root {
+  /* Backgrounds */
+  --bg-deep:     #080809;
+  --bg-base:     #0D0D0F;
+  --bg-elevated: #141416;
+
+  /* Surfaces (glassmorphism) */
+  --surface:          rgba(255 255 255 / 0.04);
+  --surface-hover:    rgba(255 255 255 / 0.07);
+  --surface-elevated: rgba(255 255 255 / 0.09);
+
+  /* Foreground */
+  --fg-primary:   #F2F2F3;
+  --fg-secondary: #A1A1AA;
+  --fg-muted:     #6B7280;
+  --fg-subtle:    #374151;
+
+  /* Accent — sky blue */
+  --accent:        #0EA5E9;
+  --accent-light:  #38BDF8;
+  --accent-dim:    rgba(14 165 233 / 0.15);
+  --accent-border: rgba(14 165 233 / 0.25);
+
+  /* Borders */
+  --border:       rgba(255 255 255 / 0.08);
+  --border-hover: rgba(255 255 255 / 0.15);
+
+  /* Semantic */
+  --destructive: #EF4444;
+  --success:     #22C55E;
+  --warning:     #F59E0B;
+
+  /* Scrim */
+  --scrim: rgba(0 0 0 / 0.6);
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 body {
-  background: #fdfdfc;
-  color: #171717;
+  background: var(--bg-base);
+  color: var(--fg-secondary);
+  font-family: var(--font-body);
   margin: 0;
   overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
