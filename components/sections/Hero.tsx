@@ -157,7 +157,7 @@ export default function Hero() {
       id="hero"
       ref={heroRef}
       onMouseMove={handleMouseMove}
-      className="hero-container sticky top-0 z-0 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-neutral-950 text-white pt-20 relative"
+      className="hero-container sticky top-0 z-0 min-h-screen flex flex-col items-center overflow-hidden bg-neutral-950 text-white relative"
     >
       {/* Base dark gradient */}
       <div className="absolute inset-0 bg-linear-to-b from-neutral-950 via-neutral-900 to-neutral-950 z-0" />
@@ -341,18 +341,19 @@ export default function Hero() {
       {/* Main Content */}
       <div
         ref={contentRef}
-        className="hero-content container relative z-20 px-6 md:px-12 flex flex-col items-center text-center gap-8 max-w-6xl"
+        className="hero-content w-full flex flex-col items-center relative z-20"
       >
-        {/* Logo Icon - Enhanced and larger for emphasis */}
+        {/* Logo Icon - positioned between nav bottom and headline */}
+        <div className="pt-32 sm:pt-36">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={isLoaded ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mb-2 mt-12 sm:mt-0"
+          className="relative"
         >
-          {/* Enhanced glow behind logo - all shades of blue */}
-          <div className="absolute inset-0 bg-sky-400/30 blur-[60px] rounded-full scale-[2]" />
-          <div className="absolute inset-0 bg-linear-to-r from-sky-300/10 to-sky-500/10 blur-[40px] rounded-full scale-150" />
+          {/* Glow behind logo — radial-gradient to transparent, no filter blur (avoids Chrome paint-clip issue) */}
+          <div className="absolute -inset-16 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(14, 165, 233, 0.28) 0%, rgba(56, 189, 248, 0.12) 40%, transparent 70%)' }} />
+          <div className="absolute -inset-8 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(125, 211, 252, 0.15) 0%, transparent 65%)' }} />
 
           {/* Logo container with only vertical movement */}
           <motion.div
@@ -397,20 +398,10 @@ export default function Hero() {
             <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1.5 h-1.5 bg-sky-600 rounded-full shadow-[0_0_6px_rgba(2,132,199,0.6)]" />
           </motion.div>
         </motion.div>
+        </div>
 
-        {/* Status Chip */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={isLoaded ? { opacity: 1, scale: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl"
-        >
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500"></span>
-          </span>
-          <span className="text-sm font-medium text-neutral-300">Open for projects</span>
-        </motion.div>
+        {/* Text content — vertically centered in remaining space */}
+        <div className="flex-1 flex flex-col items-center justify-center text-center gap-8 max-w-6xl px-6 md:px-12 pb-20 pt-12 sm:pt-16 w-full">
 
         {/* Headline with character animation - improved mobile sizing */}
         <motion.h1
@@ -474,6 +465,7 @@ export default function Hero() {
             </motion.button>
           </Link>
         </motion.div>
+        </div>
       </div>
 
       {/* Subtle Corner Frame Elements - hidden on small mobile */}
