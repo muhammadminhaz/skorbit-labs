@@ -186,7 +186,7 @@ export default function LogoTileAnimation({ className = "", onComplete }: LogoTi
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ delay: tile.delay + 0.3, duration: 0.3 }}
-                className="absolute top-1/2 right-0 w-full h-[1px] bg-gradient-to-r from-white/20 to-transparent origin-left"
+                className="absolute top-1/2 right-0 w-full h-[1px] bg-linear-to-r from-white/20 to-transparent origin-left"
                 style={{ transform: "translateY(-50%)" }}
               />
             )}
@@ -195,7 +195,7 @@ export default function LogoTileAnimation({ className = "", onComplete }: LogoTi
                 initial={{ scaleY: 0 }}
                 animate={{ scaleY: 1 }}
                 transition={{ delay: tile.delay + 0.3, duration: 0.3 }}
-                className="absolute bottom-0 left-1/2 w-[1px] h-full bg-gradient-to-b from-white/20 to-transparent origin-top"
+                className="absolute bottom-0 left-1/2 w-[1px] h-full bg-linear-to-b from-white/20 to-transparent origin-top"
                 style={{ transform: "translateX(-50%)" }}
               />
             )}

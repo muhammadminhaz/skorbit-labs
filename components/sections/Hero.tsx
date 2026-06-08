@@ -160,7 +160,7 @@ export default function Hero() {
       className="hero-container sticky top-0 z-0 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-neutral-950 text-white pt-20 relative"
     >
       {/* Base dark gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 z-0" />
+      <div className="absolute inset-0 bg-linear-to-b from-neutral-950 via-neutral-900 to-neutral-950 z-0" />
 
       {/* Animated mesh gradient blobs */}
       {/* No overflow-hidden here — Chrome clips filter:blur at container boundary.
@@ -352,7 +352,7 @@ export default function Hero() {
         >
           {/* Enhanced glow behind logo - all shades of blue */}
           <div className="absolute inset-0 bg-sky-400/30 blur-[60px] rounded-full scale-[2]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-sky-300/10 to-sky-500/10 blur-[40px] rounded-full scale-150" />
+          <div className="absolute inset-0 bg-linear-to-r from-sky-300/10 to-sky-500/10 blur-[40px] rounded-full scale-150" />
 
           {/* Logo container with only vertical movement */}
           <motion.div
@@ -478,26 +478,26 @@ export default function Hero() {
 
       {/* Subtle Corner Frame Elements - hidden on small mobile */}
       <div className="absolute top-4 sm:top-6 left-4 sm:left-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-r from-white/30 sm:from-white/40 to-transparent" />
-        <div className="absolute top-0 left-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-b from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 left-0 w-full h-[1px] sm:h-[2px] bg-linear-to-r from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 left-0 w-[1px] sm:w-[2px] h-full bg-linear-to-b from-white/30 sm:from-white/40 to-transparent" />
         <div className="absolute top-0 left-0 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 
       <div className="absolute top-4 sm:top-6 right-4 sm:right-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
-        <div className="absolute top-0 right-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-l from-white/30 sm:from-white/40 to-transparent" />
-        <div className="absolute top-0 right-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-b from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 right-0 w-full h-[1px] sm:h-[2px] bg-linear-to-l from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute top-0 right-0 w-[1px] sm:w-[2px] h-full bg-linear-to-b from-white/30 sm:from-white/40 to-transparent" />
         <div className="absolute top-0 right-0 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 
       <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
-        <div className="absolute bottom-0 left-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-r from-white/30 sm:from-white/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-t from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-[1px] sm:h-[2px] bg-linear-to-r from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-[1px] sm:w-[2px] h-full bg-linear-to-r from-white/30 sm:from-white/40 to-transparent" />
         <div className="absolute bottom-0 left-0 w-3 sm:w-4 h-3 sm:h-4 border-l border-b sm:border-l-2 sm:border-b-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 
       <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 w-20 sm:w-32 h-20 sm:h-32 z-30 pointer-events-none">
-        <div className="absolute bottom-0 right-0 w-full h-[1px] sm:h-[2px] bg-gradient-to-l from-white/30 sm:from-white/40 to-transparent" />
-        <div className="absolute bottom-0 right-0 w-[1px] sm:w-[2px] h-full bg-gradient-to-t from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 right-0 w-full h-[1px] sm:h-[2px] bg-linear-to-l from-white/30 sm:from-white/40 to-transparent" />
+        <div className="absolute bottom-0 right-0 w-[1px] sm:w-[2px] h-full bg-linear-to-t from-white/30 sm:from-white/40 to-transparent" />
         <div className="absolute bottom-0 right-0 w-3 sm:w-4 h-3 sm:h-4 border-r border-b sm:border-r-2 sm:border-b-2 border-sky-400/50 sm:border-sky-400/60" />
       </div>
 

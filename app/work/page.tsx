@@ -42,7 +42,7 @@ export default function WorkPage() {
           >
             Portfolio
           </motion.span>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-linear-to-b from-white to-white/50">
             Selected <br />
             <span className="text-sky-400">Projects</span>
           </h1>

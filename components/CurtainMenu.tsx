@@ -117,7 +117,7 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
                     >
                       <div className="flex items-baseline gap-3 md:gap-4 group">
                         <span className="text-white/20 text-xs font-mono group-hover:text-white/60 transition-colors">0{i + 1}</span>
-                        <span className="text-3xl md:text-5xl lg:text-6xl font-bold text-white group-hover:translate-x-4 transition-transform duration-500 flex items-center gap-4 bg-clip-text text-transparent bg-gradient-to-b from-white via-blue-50 to-blue-300">
+                        <span className="text-3xl md:text-5xl lg:text-6xl font-bold text-white group-hover:translate-x-4 transition-transform duration-500 flex items-center gap-4 bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-300">
                           {link.name}
                           <ArrowRight className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 text-blue-300" size={32} />
                         </span>
@@ -154,7 +154,7 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
 
               <motion.div custom={menuLinks.length + 1} variants={linkVariants} className="flex-1 min-w-[200px]">
                 <span className="text-white/40 text-[10px] font-semibold uppercase tracking-widest block mb-2">Say Hello</span>
-                <a href="mailto:hello@skorbitlabs.com" className="text-lg md:text-xl font-medium text-white hover:text-blue-300 transition-colors bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-300">
+                <a href="mailto:hello@skorbitlabs.com" className="text-lg md:text-xl font-medium text-white hover:text-blue-300 transition-colors bg-clip-text text-transparent bg-linear-to-r from-white to-blue-300">
                   hello@skorbitlabs.com
                 </a>
               </motion.div>
@@ -170,7 +170,7 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
           </div>
 
           {/* Footer of curtain */}
-          <div className="flex-shrink-0 p-8 md:p-12 flex justify-between items-center border-t border-white/5 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent">
+          <div className="flex-shrink-0 p-8 md:p-12 flex justify-between items-center border-t border-white/5 bg-linear-to-r from-transparent via-blue-500/5 to-transparent">
              <span className="text-white/20 text-xs">© 2026 Skorbit Labs. All rights reserved.</span>
              <Link href="/" onClick={onClose} className="text-white/60 hover:text-blue-300 transition-colors text-sm font-bold tracking-tighter">
                SKORBIT LABS
