@@ -164,7 +164,7 @@ export default function LogoTileAnimation({ className = "", onComplete }: LogoTi
               }}
             >
               {/* Inner glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-br from-white/20 to-transparent" />
 
               {/* Tile number (fades out) */}
               <motion.span
@@ -284,7 +284,7 @@ export function LogoTileInline({ className = "" }: { className?: string }) {
                 },
               },
             }}
-            className="w-5 h-5 md:w-6 md:h-6 rounded-sm bg-gradient-to-br from-sky-400/80 to-sky-600/60"
+            className="w-5 h-5 md:w-6 md:h-6 rounded-sm bg-linear-to-br from-sky-400/80 to-sky-600/60"
           />
         ))}
       </div>
