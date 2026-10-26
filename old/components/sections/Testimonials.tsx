@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -39,46 +39,17 @@ const testimonials = [
 ];
 
 const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] }) => {
-    const cardRef = useRef<HTMLDivElement>(null);
-    const [mousePosition, setMousePosition] = useState({ x: -200, y: -200 });
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (cardRef.current) {
-            const rect = cardRef.current.getBoundingClientRect();
-            setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-        }
-    };
-
-    const handleMouseLeave = () => {
-        setMousePosition({ x: -200, y: -200 });
-    };
-
     return (
         <div
-            ref={cardRef}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="relative h-full p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden group"
-            style={{
-                background: `
-                    radial-gradient(
-                        circle at ${mousePosition.x}px ${mousePosition.y}px,
-                        rgba(56, 189, 248, 0.15),
-                        transparent 25%
-                    ),
-                    rgba(255, 255, 255, 0.02)
-                `
-            }}
+            className="relative h-full p-8 rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden"
         >
             <div className="relative z-10">
-                <p className="text-lg text-neutral-300 leading-relaxed group-hover:text-white transition-colors duration-300">
+                <p className="text-lg text-neutral-300 leading-relaxed">
                     &ldquo;{testimonial.quote}&rdquo;
                 </p>
-                <div className="mt-8 flex items-center gap-4">
-                    <div>
-                        <p className="font-bold text-white text-lg">{testimonial.name}</p>
-                        <p className="text-sky-400 text-sm font-medium">{testimonial.title}</p>
-                    </div>
+                <div className="mt-8">
+                    <p className="font-bold text-white text-lg">{testimonial.name}</p>
+                    <p className="text-sky-400 text-sm font-medium">{testimonial.title}</p>
                 </div>
             </div>
         </div>
@@ -127,12 +98,7 @@ export default function Testimonials() {
 
     return (
         <section id="testimonials" ref={sectionRef} className="relative z-20 py-32 bg-neutral-950 text-white overflow-hidden">
-            <div className="absolute inset-0 z-0">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[150px] mix-blend-lighten animate-pulse" />
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-sky-600/20 rounded-full blur-[150px] mix-blend-lighten animate-pulse animation-delay-4000" />
-                </div>
-            </div>
+            <div aria-hidden className="absolute inset-0 z-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 30% 30%, rgba(37,99,235,0.12), transparent 70%), radial-gradient(ellipse 50% 40% at 75% 75%, rgba(2,132,199,0.12), transparent 70%)" }} />
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-4xl mb-20 text-center mx-auto">

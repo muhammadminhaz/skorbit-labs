@@ -1,68 +1,183 @@
 @import "tailwindcss";
 
 @theme {
-  --font-heading: 'Outfit', sans-serif;
-  --font-body:    'Inter', sans-serif;
-  --font-label:   'Space Grotesk', sans-serif;
+  --font-sans: var(--font-convergence), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  /* Backgrounds */
-  --bg-deep:     #080809;
-  --bg-base:     #0D0D0F;
-  --bg-elevated: #141416;
+  --bg: #07080b;
+  --fg: #f4f5f7;
+  --fg-muted: #9aa1ad;
+  --accent: #2f9be0;
 
-  /* Surfaces (glassmorphism) */
-  --surface:          rgba(255 255 255 / 0.04);
-  --surface-hover:    rgba(255 255 255 / 0.07);
-  --surface-elevated: rgba(255 255 255 / 0.09);
-
-  /* Foreground */
-  --fg-primary:   #F2F2F3;
-  --fg-secondary: #A1A1AA;
-  --fg-muted:     #6B7280;
-  --fg-subtle:    #374151;
-
-  /* Accent — sky blue */
-  --accent:        #0EA5E9;
-  --accent-light:  #38BDF8;
-  --accent-dim:    rgba(14 165 233 / 0.15);
-  --accent-border: rgba(14 165 233 / 0.25);
-
-  /* Borders */
-  --border:       rgba(255 255 255 / 0.08);
-  --border-hover: rgba(255 255 255 / 0.15);
-
-  /* Semantic */
-  --destructive: #EF4444;
-  --success:     #22C55E;
-  --warning:     #F59E0B;
-
-  /* Scrim */
-  --scrim: rgba(0 0 0 / 0.6);
-
-  /* Motion */
-  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Tokens the vendored Arc button (components/arc) reads */
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --surface: rgba(255 255 255 / 0.04);
+  --surface-muted: rgba(255 255 255 / 0.09);
+  --border: rgba(255 255 255 / 0.14);
+  --text-secondary: var(--fg-muted);
+  --text-muted: #6b7280;
+  --danger: #ef4444;
+  --shadow-resting: 0 0 0 1px rgba(255 255 255 / 0.06), 0 8px 28px -8px rgba(47 155 224 / 0.45);
+  --radius-control: 9999px;
+  --control-height-sm: 2rem;
+  --control-height-md: 2.5rem;
+  --control-height-lg: 3.5rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 2rem;
+  --leading-body: 1.4;
+  --duration-instant: 0.12s;
+  --duration-fast: 0.16s;
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-body {
-  background: var(--bg-base);
-  color: var(--fg-secondary);
-  font-family: var(--font-body);
+html, body {
+  background: var(--bg);
+  color: var(--fg);
   margin: 0;
-  overflow-x: hidden;
+  /* clip, not hidden: hidden turns body into a scroll container and breaks sticky sections */
+  overflow-x: clip;
 }
 
-h1, h2, h3, h4 {
-  font-family: var(--font-heading);
+/* ---------- Hero CTAs (see components/CtaLink.tsx) ---------- */
+@property --cta-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.cta-primary {
+  isolation: isolate;
+  animation: cta-pulse 2.8s ease-in-out infinite;
+}
+/* A short arc of cyan light that orbits the border */
+.cta-primary::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--cta-angle), transparent 0 55%, #2f9be0 72%, #7ee3ff 84%, transparent 94%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: cta-orbit 2.6s linear infinite;
+}
+.cta-shine {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.cta-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(126 227 255 / 0.55) 48%, rgba(47 155 224 / 0.35) 54%, transparent 70%);
+  transform: translateX(-130%);
+  animation: cta-sweep 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.cta-primary:hover .cta-cal { animation: cta-ring 0.6s ease-in-out; }
+
+.cta-secondary {
+  background: rgba(255 255 255 / 0.05) !important;
+  border-color: rgba(255 255 255 / 0.16) !important;
+  backdrop-filter: blur(12px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cta-secondary:hover {
+    border-color: rgba(126 227 255 / 0.6) !important;
+    background: rgba(47 155 224 / 0.12) !important;
+    box-shadow: 0 0 28px -8px rgba(47 155 224 / 0.7);
+  }
+  .group:hover .cta-arrow:not(.cta-arrow-in) { transform: translate(120%, -120%); }
+  .group:hover .cta-arrow-in { transform: translate(0, 0); }
+}
+.cta-arrow {
+  grid-area: 1 / 1;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cta-arrow-in { transform: translate(-120%, 120%); }
+
+@keyframes cta-orbit { to { --cta-angle: 360deg; } }
+@keyframes cta-pulse {
+  0%, 100% { box-shadow: 0 0 22px -6px rgba(47 155 224 / 0.45); }
+  50% { box-shadow: 0 0 44px -4px rgba(126 227 255 / 0.75); }
+}
+@keyframes cta-sweep {
+  0%, 45% { transform: translateX(-130%); }
+  75%, 100% { transform: translateX(130%); }
+}
+@keyframes cta-ring {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-14deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-6deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  .cta-primary, .cta-primary::before, .cta-shine::after, .cta-cal { animation: none !important; }
+  .cta-primary { box-shadow: 0 0 28px -6px rgba(47 155 224 / 0.55); }
+  .cta-arrow { transition: none; }
+}
+
+/* ---------- Page transitions (see app/template.tsx) ---------- */
+/* The browser holds a snapshot of the old page while an edge sweeps down the screen with the curtain menu's
+   motion (CurtainMenu.tsx: 0.8s, cubic-bezier(0.76, 0, 0.24, 1)). Neither page moves: above the edge is the new
+   page, below it the old one. The navbar stays put above both. */
+/* Named only while a transition runs: a view-transition-name makes the element a backdrop root, which would
+   leave the navbar's backdrop-blur with nothing behind it to blur */
+:root:active-view-transition .site-nav { view-transition-name: site-nav; }
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; }
+::view-transition-group(site-nav) { animation: none; z-index: 3; }
+::view-transition-old(site-nav) { display: none; }
+::view-transition-new(site-nav) { animation: none; }
+
+/* The nav snapshot can't carry backdrop-blur (nothing is behind it when captured), so each glass pill gets its
+   own snapshot and the blur is redrawn on its group, over the page snapshots, for the whole transition */
+:root:active-view-transition [data-glass] { view-transition-class: nav-glass; }
+:root:active-view-transition [data-glass="brand"] { view-transition-name: nav-brand; }
+:root:active-view-transition [data-glass="menu"] { view-transition-name: nav-menu; }
+:root:active-view-transition [data-glass="dots"] { view-transition-name: nav-dots; }
+::view-transition-group(.nav-glass) {
+  animation: none;
+  z-index: 4;
+  border-radius: 9999px;
+  backdrop-filter: blur(12px);
+}
+::view-transition-group(nav-brand) { border-radius: 2rem 0.25rem; }
+::view-transition-old(.nav-glass) { display: none; }
+::view-transition-new(.nav-glass) { animation: none; }
+
+/* Old page: stays exactly where it was until the edge has passed */
+::view-transition-group(.page-out) { z-index: 1; }
+::view-transition-old(.page-out) { animation: page-hold 0.8s both; }
+
+/* Flat cyan edge; drop-shadow on the group follows the clip's bottom edge */
+::view-transition-group(.page-in) {
+  z-index: 2;
+  filter: drop-shadow(0 1px 0 #7ee3ff) drop-shadow(0 0 22px rgba(126 227 255 / 0.55));
+}
+/* New page stays in place and is uncovered from the top down. Snapshots are the full page height, so the clip
+   ends at the first screen (the scroll resets to the top). */
+::view-transition-new(.page-in) {
+  animation: page-wipe 0.8s cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+@keyframes page-wipe {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 calc(100% - 100vh) 0); }
+}
+@keyframes page-hold { to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.page-in) { filter: none; }
+  ::view-transition-new(.page-in),
+  ::view-transition-old(.page-out) { animation: none; }
 }

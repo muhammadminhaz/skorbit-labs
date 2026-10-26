@@ -1,28 +1,28 @@
-import dynamic from "next/dynamic";
-import Navbar from "@/components/Navbar";
+import type { Metadata } from "next";
+import { pageMeta, DEFAULT_DESCRIPTION } from "@/lib/seo";
 import Hero from "@/components/sections/Hero";
+import FeaturedWork from "@/components/sections/FeaturedWork";
+import WhoWeAre from "@/components/sections/WhoWeAre";
+import Services from "@/components/sections/Services";
+import Process from "@/components/sections/Process";
+import FAQ from "@/components/sections/FAQ";
+import Contact from "@/components/sections/Contact";
 
-const Philosophy   = dynamic(() => import("@/components/sections/Philosophy"));
-const FeaturedWork = dynamic(() => import("@/components/sections/FeaturedWork"));
-const Services     = dynamic(() => import("@/components/sections/Services"));
-const WhySkorbit   = dynamic(() => import("@/components/sections/WhySkorbit"));
-const Process      = dynamic(() => import("@/components/sections/Process"));
-const Testimonials = dynamic(() => import("@/components/sections/Testimonials"));
-const CTA          = dynamic(() => import("@/components/sections/CTA"));
-const Footer       = dynamic(() => import("@/components/sections/Footer"));
+export const metadata: Metadata = pageMeta({
+  description: DEFAULT_DESCRIPTION,
+  path: "/",
+});
 
 export default function Home() {
-    return (
-        <main className="bg-[#0D0D0F] text-neutral-400 selection:bg-sky-900 selection:text-sky-200">
-            <Navbar/>
-            <Hero/>
-            <Philosophy/>
-            <FeaturedWork/>
-            <Services/>
-            <WhySkorbit/>
-            <Process/>
-            <Testimonials/>
-            <Footer/>
-        </main>
-    );
+  return (
+    <main>
+      <Hero />
+      <FeaturedWork />
+      <WhoWeAre />
+      <Services />
+      <Process />
+      <FAQ />
+      <Contact />
+    </main>
+  );
 }

@@ -37,7 +37,7 @@ export default function Philosophy() {
         const { isMobile } = context.conditions as { isMobile: boolean };
 
         // Reset positions and initial states inside matchMedia
-        gsap.set(text, { opacity: 0, filter: "blur(20px)", scale: 0.9 });
+        gsap.set(text, { opacity: 0, scale: 0.92, y: 30 });
         
         if (isMobile) {
           gsap.set(box1, { left: "50%", x: 0, xPercent: -50, yPercent: -50, y: "-100vh" });
@@ -83,8 +83,8 @@ export default function Philosophy() {
         // C. Header Text Appearance
         mainTl.to(text, {
           opacity: 1,
-          filter: "blur(0px)",
           scale: 1,
+          y: 0,
           duration: 1,
           ease: "power2.out"
         }) 
@@ -104,8 +104,8 @@ export default function Philosophy() {
         // E. Text Fade Out
         mainTl.to(text, {
           opacity: 0,
-          filter: "blur(20px)",
-          scale: 1.1,
+          scale: 1.06,
+          y: -30,
           duration: 1,
         }, ">");
 
@@ -113,6 +113,9 @@ export default function Philosophy() {
       });
 
     }, sectionRef);
+
+    // Sections below load as separate chunks; re-measure once the pin spacer exists.
+    ScrollTrigger.refresh();
 
     return () => ctx.revert();
   }, []);
@@ -125,15 +128,14 @@ export default function Philosophy() {
     >
       {/* Background Effects */}
       <div ref={backgroundRef} className="absolute inset-0 z-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/30 rounded-full blur-[120px] will-change-transform" />
-          <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] max-w-[200vw]" style={{ background: "radial-gradient(circle, rgba(59,130,246,0.22), transparent 60%)" }} />
       </div>
 
       {/* Centered Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
         <h2
           ref={textRef}
-          className="text-4xl md:text-6xl lg:text-8xl font-bold text-center leading-tight max-w-6xl px-4 bg-clip-text text-transparent bg-linear-to-b from-white via-blue-100 to-blue-400 drop-shadow-2xl"
+          className="text-4xl md:text-6xl lg:text-8xl font-bold text-center leading-tight max-w-6xl px-4 bg-clip-text text-transparent bg-linear-to-b from-white via-blue-100 to-blue-400 "
         >
           Bringing excellence into existence
         </h2>
@@ -145,7 +147,7 @@ export default function Philosophy() {
         {/* Box 1 - Inside Skorbit Labs - Z-Index 20 (Top) */}
         <div
           ref={box1Ref}
-          className="absolute w-80 md:w-96 p-8 rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl z-20"
+          className="absolute w-[min(20rem,calc(100vw-2rem))] md:w-96 p-8 rounded-2xl bg-neutral-900/90 border border-white/15 shadow-2xl will-change-transform z-20"
         >
           <h3 className="text-2xl font-bold mb-2 text-white">Inside Skorbit Labs</h3>
           <div className="h-1 w-12 bg-sky-400 rounded-full mb-4" />
@@ -157,7 +159,7 @@ export default function Philosophy() {
         {/* Box 2 - About Ourselves - Z-Index 10 (Bottom) */}
         <div
           ref={box2Ref}
-          className="absolute w-80 md:w-96 p-8 rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl z-10"
+          className="absolute w-[min(20rem,calc(100vw-2rem))] md:w-96 p-8 rounded-2xl bg-neutral-900/90 border border-white/15 shadow-2xl will-change-transform z-10"
         >
           <h3 className="text-2xl font-bold mb-2 text-white">Our Essence</h3>
           <div className="h-1 w-12 bg-blue-500 rounded-full mb-4" />

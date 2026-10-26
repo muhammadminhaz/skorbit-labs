@@ -1,201 +1,73 @@
-"use client";
-
-import React, { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import MagneticButton from "../ui/MagneticButton";
-import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import CtaLink from "@/components/CtaLink";
+import FlutedGlassShader from "@/components/FlutedGlassShader";
+import ServiceStrip from "@/components/ServiceStrip";
+import { CONTACT_EMAIL as EMAIL, TEAM_COUNTRIES_TEXT } from "@/lib/site";
 
-gsap.registerPlugin(ScrollTrigger);
-
-interface GlowBlockProps {
-  children: React.ReactNode;
-  className?: string;
-  glowColor?: string;
-}
-
-const shapeClass = "rounded-tl-[3rem] rounded-br-[3rem] md:rounded-tl-[6rem] md:rounded-br-[6rem] rounded-tr-xl rounded-bl-xl";
-
-const GlowBlock = ({
-  children,
-  className = "",
-  glowColor = "rgba(14, 165, 233, 0.7), rgba(56, 189, 248, 0.4)",
-}: GlowBlockProps) => {
-  const mouseX = useMotionValue(-1000);
-  const mouseY = useMotionValue(-1000);
-  const [hovered, setHovered] = useState(false);
-  const gradient = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, ${glowColor}, transparent 80%)`;
-
-  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  }
-
-  return (
-    <div
-      onPointerMove={onPointerMove}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => {
-        setHovered(false);
-        mouseX.set(-1000);
-        mouseY.set(-1000);
-      }}
-      className={`relative group bg-neutral-900/60 backdrop-blur-xl border border-white/10 overflow-hidden ${shapeClass} ${className}`}
-    >
-      <motion.div
-        className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${shapeClass}`}
-        style={{
-          opacity: hovered ? 1 : 0,
-          padding: "1px",
-          background: gradient,
-          WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-          WebkitMaskComposite: "destination-out",
-          maskComposite: "exclude",
-        }}
-      />
-      {children}
-    </div>
-  );
-};
+const PAGES = [
+  { name: "Home", href: "/" },
+  { name: "Work", href: "/work" },
+  { name: "About", href: "/about" },
+  { name: "Services", href: "/services" },
+  { name: "Contact", href: "/contact" },
+];
 
 export default function Footer() {
-  const [time, setTime] = useState("");
-  const footerRef = useRef<HTMLElement>(null);
-  const titleRef = useRef(null);
-  const indexLinksRef = useRef<(HTMLAnchorElement | null)[]>([]);
-  const socialLinksRef = useRef<(HTMLAnchorElement | null)[]>([]);
-  const bigTextRef = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-      const gmtOffset = -now.getTimezoneOffset() / 60;
-      setTime(`${timeString} (GMT${gmtOffset >= 0 ? "+" : ""}${gmtOffset})`);
-    };
-    updateTime();
-    const timer = setInterval(updateTime, 1000);
-
-    const ctx = gsap.context(() => {
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        scrollTrigger: { trigger: titleRef.current, start: "top 90%" },
-      });
-
-      const animateLinks = (links: (HTMLAnchorElement | null)[]) => {
-        links.forEach((link, index) => {
-          if (link) {
-            gsap.from(link, {
-              opacity: 0,
-              y: 20,
-              duration: 0.5,
-              delay: index * 0.1,
-              scrollTrigger: { trigger: link, start: "top 95%" },
-            });
-          }
-        });
-      };
-      animateLinks(indexLinksRef.current);
-      animateLinks(socialLinksRef.current);
-
-      if (bigTextRef.current) {
-        const text = bigTextRef.current.textContent || "";
-        bigTextRef.current.textContent = "";
-        text.split("").forEach((char, index) => {
-          const span = document.createElement("span");
-          span.innerHTML = char === " " ? "&nbsp;" : char;
-          span.style.display = "inline-block";
-          span.style.opacity = "0";
-          span.style.transform = "translateY(50px)";
-          bigTextRef.current?.appendChild(span);
-          gsap.to(span, {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            delay: index * 0.05,
-            scrollTrigger: { trigger: bigTextRef.current, start: "top 90%" },
-          });
-        });
-      }
-    }, footerRef);
-
-    return () => {
-      clearInterval(timer);
-      ctx.revert();
-    };
-  }, []);
-
   return (
-    <section
-      id="footer"
-      ref={footerRef}
-      className="relative z-20 min-h-screen bg-black p-4 md:p-8 flex flex-col"
-    >
-      <GlowBlock className="w-full grow flex flex-col">
-        <div className="relative z-10 grow flex flex-col p-6 md:p-12">
-          {/* Top CTA block */}
-          <div
-            ref={titleRef}
-            className={`relative ${shapeClass} bg-linear-to-br from-sky-400/20 to-sky-500/30 backdrop-blur-lg p-12 md:p-20 flex flex-col items-center text-center -m-6 md:-m-12 mb-12`}
-          >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-sky-50 to-sky-200 mb-6">
-              Join the thrill
-            </h2>
-            <MagneticButton className="text-lg cursor-pointer">Let&apos;s Talk</MagneticButton>
-          </div>
+    <footer className="relative border-t border-white/10">
+      {/* CTA band over the hero's shader, closed by the same service strip as the hero */}
+      <div className="relative isolate overflow-hidden">
+        <FlutedGlassShader className="absolute inset-0 -z-10 h-full w-full" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_55%_55%_at_50%_45%,rgba(7,8,11,0.72),transparent)]" />
 
-          {/* Middle nav */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 my-auto pt-12">
-            <div className="md:col-span-3 flex flex-col gap-4">
-              <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Index</h3>
-              <nav className="flex flex-col gap-2">
-                {["Home", "Services", "Privacy Policy", "Terms of Use"].map((item, i) => (
-                  <Link
-                    key={item}
-                    href="#"
-                    ref={el => { indexLinksRef.current[i] = el; }}
-                    className="text-neutral-300 hover:text-white transition-colors text-lg"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-            <div className="md:col-span-3 flex flex-col gap-4">
-              <h3 className="text-neutral-500 uppercase tracking-wider text-sm font-medium">Social</h3>
-              <nav className="flex flex-col gap-2">
-                {["Facebook", "X", "Instagram", "LinkedIn"].map((item, i) => (
-                  <Link
-                    key={item}
-                    href="#"
-                    ref={el => { socialLinksRef.current[i] = el; }}
-                    className="text-neutral-300 hover:text-white transition-colors text-lg"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-            <div className="md:col-span-6 flex items-end justify-end">
-              <p className="text-neutral-600 font-mono text-sm">{time}</p>
-            </div>
-          </div>
-
-          {/* Big wordmark */}
-          <div className="w-full overflow-hidden relative mt-auto -mb-6 md:-mb-12">
-            <h1
-              ref={bigTextRef}
-              className="text-[13vw] leading-[1] font-bold text-white text-center tracking-tighter select-none opacity-90 whitespace-nowrap"
-            >
-              Skorbit Labs
-            </h1>
+        <div className="flex flex-col items-center px-6 py-28 text-center md:py-40">
+          <h2 className="max-w-4xl text-4xl leading-[1.08] tracking-[-0.03em] text-balance md:text-6xl lg:text-7xl">
+            Turn your idea into a product that grows
+          </h2>
+          <div className="mt-10">
+            <CtaLink href="/contact">Book a call</CtaLink>
           </div>
         </div>
-      </GlowBlock>
-    </section>
+
+        <ServiceStrip />
+      </div>
+
+      <div className="border-t border-white/10 px-4 md:px-8">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-[2fr_1fr_1fr] md:px-12 md:py-20">
+          <div className="flex max-w-sm flex-col gap-5">
+            <Link href="/" className="flex items-center gap-2.5 text-xl text-white">
+              <Image src="/images/dark_theme_logo.svg" alt="" width={374} height={455} className="h-8 w-auto" />
+              Skorbit Labs
+            </Link>
+            <p className="leading-relaxed text-(--fg-muted)">
+              A people-first studio turning ideas into products, brands and growth that last. Working worldwide from{" "}
+              {TEAM_COUNTRIES_TEXT}.
+            </p>
+          </div>
+
+          <nav aria-label="Footer" className="flex flex-col gap-4">
+            <span className="text-xs tracking-[0.2em] text-white/45 uppercase">Pages</span>
+            <ul className="flex flex-col gap-2.5">
+              {PAGES.map((page) => (
+                <li key={page.href}>
+                  <Link href={page.href} className="text-white/85 transition-colors hover:text-[#7ee3ff]">{page.name}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex flex-col gap-4">
+            <span className="text-xs tracking-[0.2em] text-white/45 uppercase">Get in touch</span>
+            <a href={`mailto:${EMAIL}`} className="w-fit text-white/85 transition-colors hover:text-[#7ee3ff]">{EMAIL}</a>
+          </div>
+        </div>
+
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-2 border-t border-white/10 px-6 py-6 text-sm text-white/40 md:flex-row md:px-12">
+          <span>© {new Date().getFullYear()} Skorbit Labs. All rights reserved.</span>
+          <span>Built with intention, clarity and care.</span>
+        </div>
+      </div>
+    </footer>
   );
 }

@@ -1,60 +1,37 @@
-"use client";
-
-import Navbar from "@/components/Navbar";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import PageHero from "@/components/PageHero";
+import SplitSection from "@/components/SplitSection";
 import FeaturedWork from "@/components/sections/FeaturedWork";
-import Footer from "@/components/sections/Footer";
-import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
+
+export const metadata: Metadata = pageMeta({
+  title: "Our Work",
+  description: "Explore the Skorbit Labs portfolio of web apps, SaaS platforms, mobile apps and AI products designed, built and grown for businesses worldwide.",
+  path: "/work",
+});
+
+const INCLUDED = [
+  { title: "A written plan before we build", body: "Goals, scope, timeline and a fixed estimate, agreed with you in writing. No surprises halfway through." },
+  { title: "Designs you can click", body: "Clickable prototypes you can put in front of real users before a line of production code is written." },
+  { title: "A weekly demo of working software", body: "You see real progress every week, not status reports, and you can change direction while it is still cheap." },
+  { title: "Code, designs and accounts you own", body: "Everything lives in your accounts from day one, documented so any team could pick it up after us." },
+  { title: "A calm launch", body: "Tested, monitored and deployed with a rollback plan, then watched closely in the days after release." },
+  { title: "Support after go-live", body: "Fixes, improvements and the marketing that grows the product, for as long as it is useful to you." },
+];
 
 export default function WorkPage() {
-  const headerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".work-header-content > *", {
-        y: 60,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power4.out",
-      });
-    }, headerRef);
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <main className="bg-neutral-950 text-white selection:bg-sky-500/30">
-      <Navbar />
-      
-      {/* Work Hero Section */}
-      <section ref={headerRef} className="relative pt-40 pb-20 overflow-hidden">
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-sky-400/10 rounded-full blur-[100px]" />
-        </div>
-        
-        <div className="container relative z-10 px-6 mx-auto work-header-content">
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="inline-block px-3 py-1 mb-6 text-xs font-semibold tracking-widest uppercase border rounded-full border-white/10 bg-white/5 text-sky-400"
-          >
-            Portfolio
-          </motion.span>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-linear-to-b from-white to-white/50">
-            Selected <br />
-            <span className="text-sky-400">Projects</span>
-          </h1>
-          <p className="text-lg md:text-xl text-neutral-400 max-w-2xl leading-relaxed">
-            We partner with forward-thinking companies to build digital products that challenge the status quo and deliver measurable results.
-          </p>
-        </div>
-      </section>
-
-      <FeaturedWork />
-      
-      <Footer />
+    <main>
+      <PageHero
+        title="Work"
+        intro="Products we have designed, built and grown. Each case study is written plainly: the problem, the decisions we made and what shipped."
+      />
+      <FeaturedWork header={false} showAllLink={false} />
+      <SplitSection
+        title="What every project includes"
+        intro="Whatever the size of the brief, the same standards come with it. This is what you can hold us to."
+        items={INCLUDED}
+      />
     </main>
   );
 }

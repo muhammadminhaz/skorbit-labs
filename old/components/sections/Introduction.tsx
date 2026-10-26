@@ -62,7 +62,7 @@ export default function Introduction() {
                 Founded on the belief that great design is the differentiator, Skorbit Labs combines high-end aesthetics with cutting-edge technology.
               </p>
               <p>
-                We don't just build products; we craft experiences that resonate with users and drive meaningful growth for brands. Our approach is collaborative, transparent, and relentlessly focused on quality.
+                We don&apos;t just build products; we craft experiences that resonate with users and drive meaningful growth for brands. Our approach is collaborative, transparent, and relentlessly focused on quality.
               </p>
             </div>
 

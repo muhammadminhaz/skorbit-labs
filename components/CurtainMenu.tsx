@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { CONTACT_EMAIL } from "@/lib/site";
 import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { X, Instagram, Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
@@ -51,8 +52,8 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
       opacity: 1,
       y: 0,
       transition: {
-        delay: 0.4 + i * 0.1,
-        duration: 0.5,
+        delay: i * 0.04,
+        duration: 0.3,
         ease: "easeOut",
       },
     }),
@@ -66,12 +67,10 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
           animate="open"
           exit="closed"
           variants={curtainVariants}
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col"
+          className="fixed inset-0 z-[100] bg-neutral-950 flex flex-col"
         >
           {/* Background decorative elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse" />
-            <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-blue-400/10 rounded-full blur-[100px] animate-pulse delay-700" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05)_0%,transparent_70%)]" />
           </div>
 
@@ -85,15 +84,13 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
                 type: "spring", 
                 stiffness: 260, 
                 damping: 20,
-                delay: 0.2 
+                delay: 0.1
               }}
               onClick={onClose}
-              className="group relative w-14 h-14 flex items-center justify-center bg-white/5 backdrop-blur-md border border-white/10 rounded-full hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg"
+              className="group relative w-14 h-14 flex items-center justify-center bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-white/20 transition-colors duration-300"
             >
-              <X className="text-white group-hover:rotate-90 transition-transform duration-500" size={24} />
-              
-              {/* Inner glow effect */}
-              <div className="absolute inset-0 rounded-full bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <X className="text-white group-hover:rotate-90 transition-[rotate] duration-500" size={24} />
+
             </motion.button>
           </div>
 
@@ -154,8 +151,8 @@ const CurtainMenu = ({ isOpen, onClose }: CurtainMenuProps) => {
 
               <motion.div custom={menuLinks.length + 1} variants={linkVariants} className="flex-1 min-w-[200px]">
                 <span className="text-white/40 text-[10px] font-semibold uppercase tracking-widest block mb-2">Say Hello</span>
-                <a href="mailto:hello@skorbitlabs.com" className="text-lg md:text-xl font-medium text-white hover:text-blue-300 transition-colors bg-clip-text text-transparent bg-linear-to-r from-white to-blue-300">
-                  hello@skorbitlabs.com
+                <a href={`mailto:${CONTACT_EMAIL}`} className="text-lg md:text-xl font-medium text-white hover:text-blue-300 transition-colors bg-clip-text text-transparent bg-linear-to-r from-white to-blue-300">
+                  {CONTACT_EMAIL}
                 </a>
               </motion.div>
 

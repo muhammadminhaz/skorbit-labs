@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Skorbit Labs
 
-## Getting Started
+The Skorbit Labs site, at the repo root. The previous site is kept as-is in `old/` (its own `package.json`; excluded from the root `tsconfig.json` and ESLint so it never affects this build).
 
-First, run the development server:
+## Stack
+Next.js 16 (App Router), React 19, Tailwind CSS 4, Framer Motion, lucide-react. Dark theme, set in Convergence (loaded with `next/font/google`).
 
+## Run
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
+- `app/layout.tsx`: Convergence font, metadata, the global `Navbar`, and the site-wide grid (one hairline down each side of the `max-w-7xl` content column, drawn over every section). Sections separate with a full-width `border-t border-white/10`.
+- `app/globals.css`: dark color tokens on `:root`, plus the tokens the vendored Arc button reads.
+- `components/Navbar.tsx`, `components/CurtainMenu.tsx`: carried over from the old site. The studio block shows the mark (`public/images/dark_theme_logo.svg`) beside "Skorbit Labs".
+- `components/sections/Hero.tsx`: headline, subheading and two CTAs (Book a call, Explore our work), with a frosted-glass four-cell service strip along the bottom (AI Integration, Software Development, Marketing, SEO). The CTAs share one grid track so both take the wider label's width; text is centered.
+- `components/FlutedGlassShader.tsx`: the hero background. A raw WebGL fragment shader (no dependency): soft blobs of the logo's cyan and blue light drifting behind diagonal fluted glass, each slat refracting its strip with chromatic fringes at the edges. Capped at 1.5x DPR, paused when off screen, frozen on one frame under `prefers-reduced-motion`; the CSS gradient behind it shows if WebGL is unavailable.
+- `components/sections/FeaturedWork.tsx`: "Our work" section, ported from the old site and restyled for the dark theme. POS-sible card (landing page screenshot; hovering reveals the dashboard under a cursor spotlight, slides in the services we delivered (typed against `lib/services.ts`, the same list the hero strip renders) and shows a "View case study" cursor) plus a "Coming soon" card. Cards slide in from the sides on scroll (Framer Motion `whileInView`, replacing the old GSAP ScrollTrigger). Images in `public/images/work/`.
+- `components/sections/WhoWeAre.tsx`: "Who we are" section. A short people-first manifesto that lights up word by word on scroll (Framer Motion `useScroll`), with its key phrase in cyan. Copy comes from the old site's Why Choose Us section; the old intro's stats and stock photo were left out as unverified.
+- `components/sections/Services.tsx`: "Services" as a stacking card list. The old site's five services, copy and Unsplash photos (`images.unsplash.com` is allowed in `next.config.ts`), one card each: photo left; title, number and description right, always visible. On `lg`+ each card sticks a little lower than the last (`STACK_TOP + i * PEEK`) so later cards slide over earlier ones and leave a `PEEK`-tall strip of each showing; each card's header row is exactly `PEEK` tall so stacked titles show in full, and cards get progressively lighter to read as depth. A closing card (the old Discover row's photo on the left, a statement and a "What we do" link on the right) (`/services`) takes the next slot in the stack. Cards are a fixed `CARD_H` on `lg`, and `stackMargins` extends every card's margin box to the same bottom line (cancelled by the next card's negative top margin) so the stack leaves the screen as one block instead of collapsing card by card. A `40vh` spacer after the closing card holds the finished stack in place before it leaves. Once the stack has formed (cards packed `PEEK` apart, resting or leaving), clicking a card (or Enter/Space when focused; desktop, pointer cursor) slides every later card down by `EXPAND` with a transform to reveal it in full (the section is `overflow-clip` so they never spill into the next section); clicking it again or scrolling more than 120px collapses it. Below `lg` it is a plain list.
+- `components/sections/Process.tsx`: "Process" bento grid, four step cards (Discovery & Strategy, Design & Prototyping, Development & Launch, Growth & Optimization). Each has an illustrative mockup built in code (project brief checklist, dashboard wireframe, code editor with a Deploy chip, growth curve) that animates once on scroll, then a number chip, title and description. Animations start at their end state under `prefers-reduced-motion`.
+- `components/sections/FAQ.tsx`: "Got a question? We've got answers." A seven-question accordion (one open at a time, first open by default; buttons with `aria-expanded`) beside a "Still have questions?" card linking to `#contact`. Answers on pricing and timelines are general placeholders to confirm.
+- `components/sections/Contact.tsx`: "Get in touch with the team" (`#contact`, tracked by the navbar). Intro and email on the left; a form card on the right (name, email, optional service chips from `lib/services.ts`, message). Client-side validation with inline errors and focus on the first invalid field. No backend yet: a valid submit opens the visitor's email app pre-filled via `mailto:` and shows a confirmation with the address as a fallback. Swap `buildMailto` for a POST to a route handler once an email provider is chosen.
+- `lib/site.ts`: `CONTACT_EMAIL`, shared by the contact section and the footer, and `TEAM`, the team members shown under "Who we are". `TEAM` is empty by default; add `{ name, role, photo }` entries (photos in `public/images/team`) and the cards appear. It holds the real team: Rasul Al Foysal Redoy (Founder & CEO), Ahmad Al Hasib (Managing Director), Md Asiful Islam (CMO) and Md Minhazur Rahman (CTO). Each member also has a `country` (Saudi Arabia, Australia, Bangladesh), used in the JSON-LD; `TEAM_COUNTRIES_TEXT` is the same list as prose, used in the About team intro and the footer blurb. Photos are square head-and-shoulders crops with the eyes about 40% from the top, so faces sit at the same scale in the 4:5 cards (`object-cover`, bottom-anchored).
+- `components/TeamGlobe.tsx`: spinning WebGL globe from [cobe](https://github.com/shuding/cobe) (MIT, about 5 kB, no dependencies) under the team cards (`TeamCards`, so on home and About). Riyadh, Dhaka and Sydney stand in for the three countries, joined by arcs; country labels track the markers with CSS anchor positioning and fade out behind the globe. Pauses off screen, holds still under `prefers-reduced-motion`, and is skipped without WebGL. React Bits and uiarc only offer a globe in their paid tiers, hence cobe.
+- `components/ProfileCard.tsx`: holographic team card vendored from React Bits ProfileCard. The card tilts toward the cursor with a glare and rainbow foil that show only on hover; photo parallax and the intro tilt are kept. Trimmed from the original: the handle/status/contact footer and phone gyroscope tilt. The foil sits above the photo because team photos are opaque, not cutouts. "Who we are" renders one card per `TEAM` member, four across on desktop, two on tablet, one on phone.
+- Section headings: every section opens with a plain heading (Who we are, Services, Process, Our work, Contact, FAQ), no eyebrow labels.
+- `components/sections/Footer.tsx`: site-wide footer, rendered in `app/layout.tsx`. A CTA band ("Turn your idea into a product that grows" + Book a call) over the hero's `FlutedGlassShader`, closed by the same `ServiceStrip` as the hero; then brand blurb, page links, email and copyright.
+- `components/ServiceStrip.tsx`: the frosted four-service strip (from `lib/services.ts`) shared by the hero and the footer.
+- `components/CtaLink.tsx`: a Next `Link` (or a submit button when `href` is omitted; `icon` swaps the primary icon) styled with Arc's button styles and press spring (Arc's own `Button` renders a `<button>`, which can't navigate). Primary (Book a call): calendar icon, a cyan beam orbiting the border, a pulsing glow and a periodic shine sweep; the icon rings on hover. Secondary (Explore our work): frosted glass, border lights up on hover and the arrow swaps out diagonally. Effects are CSS in `app/globals.css` (`.cta-*`) and switch off under `prefers-reduced-motion`.
+- `components/arc/`: `button.module.css` and `motion-tokens.ts` from [Arc](https://uiarc.dev) (free tier, MIT).
+- `public/images/{dark,light}_theme_logo.svg`: the mark, with its viewBox trimmed to the artwork.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Pages
+- `/` home: Hero, Our work, Who we are (with team cards), Services, Process, FAQ, Contact.
+- `/work`: page hero, the project cards (`FeaturedWork` with `header={false}`), and "What every project includes".
+- `/work/pos-sible`: case study. Meta row, dashboard cover, problem and why, the local needs it was designed around, what was built, the landing page and live demo, engineering decisions, stack, numbers. Content comes from the old site's case study; nothing added that was not in it.
+- `/about`: structure modeled on estrela.studio/about. Centered h1, then a five-photo strip that pins while scrolling while the middle photo grows to fill the frame (`components/about/AboutHero.tsx`; static under `prefers-reduced-motion`). Then "Our philosophy" (heading left; a large statement on our passion and a paragraph on what each project means to us, right), "Mission and values" (sticky title; "Why we build" plus two expandable lists, "Honest by default" and "Built around you", in `components/about/ValueList.tsx`; on a mouse, hovering a row opens it and leaving the list closes it, touch and keyboard toggle on click), the honesty pull quote, and "Meet the team" with the same holo cards as home (`components/TeamCards.tsx`, shown only when `TEAM` has members).
+- `/services`: page hero with jump links, then one section per service (photo, description, what you get, who it fits), Process and FAQ. Service data lives in `lib/services.ts` (`SERVICE_ROWS`), shared with the home Services stack.
+- `/contact`: the contact form as the page's h1 (`Contact asPage`), "What happens next" (four numbered steps), FAQ.
+- `app/not-found.tsx`: 404 with links home and to work.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Shared page pieces
+- `components/ScrollToTop.tsx`: frosted round button, bottom right on every page (rendered in `app/layout.tsx`). Appears after scrolling past most of the first screen and smooth-scrolls to the top (instant under `prefers-reduced-motion`).
+- `app/template.tsx` + `app/globals.css` (Page transitions): uses React's `<ViewTransition>` with `experimental.viewTransition` in `next.config.ts`, so the browser keeps a snapshot of the old page on screen while a flat glowing cyan edge sweeps down the screen with the curtain menu's motion (0.8s, `cubic-bezier(0.76, 0, 0.24, 1)`). Neither page moves: the new page appears above the edge, the old one stays below it. The navbar gets its own `view-transition-name` (`site-nav`) only while a transition runs (`:root:active-view-transition .site-nav`), so it stays put above both pages; naming it permanently would make it a backdrop root and break its backdrop blur. Because a snapshot can't carry `backdrop-filter`, each glass pill (marked `data-glass` in `Navbar.tsx`) also gets its own snapshot during the transition and its `::view-transition-group` redraws the blur over the page snapshots, so the glass never drops out mid-navigation. The scroll-collapsed menu pill is clipped rather than faded: an `opacity < 1` ancestor also switches off backdrop blur until the fade ends. Browsers without the View Transitions API just swap pages instantly. No animation under `prefers-reduced-motion`.
+- `components/PageHero.tsx`: inner page opening (optional back link, h1, intro, extra content), animated in after the veil lifts.
+- `components/SplitSection.tsx`: sticky heading and intro on the left, rows on the right; `numbered` only for real sequences.
+- `components/Reveal.tsx`: the fade-up on scroll as a client wrapper, so pages stay server components.
+- `FAQ`'s "Contact us" link points to `#contact` on `/` and `/contact`, and to `/contact` elsewhere.
 
-## Learn More
+## SEO
+Set up for a global, English-speaking market on `https://skorbit-labs.com` (`SITE_URL` in `lib/site.ts`).
+- `app/layout.tsx`: `metadataBase`, a title template (`%s | Skorbit Labs`), default description, keywords, robots (index, large image previews), theme color, and Organization (`ProfessionalService`, `areaServed: Worldwide`) plus WebSite JSON-LD.
+- `lib/seo.ts`: `pageMeta({ title, description, path })` gives every page its title, description, canonical URL, Open Graph and Twitter card (with the share image restated, since a page's `openGraph` replaces the layout's). Titles are kept under about 60 characters and descriptions under about 160. Branding follows estrela.studio: brand first in every title (`Skorbit Labs | About Us`, template in `TITLE_TEMPLATE`), the home page gets the keyword line (`Skorbit Labs | Websites, Apps, AI and Digital Growth`), and every description names the brand and ends on "businesses worldwide". The Organization JSON-LD carries the slogan, `areaServed: Worldwide`, the founder and each team member with their country.
+- `app/opengraph-image.png` (+ `.alt.txt`): the 1200x630 share cover ("Build products. Grow brands."). `pageMeta` also names it explicitly, since a page's own `openGraph` drops the inherited file image.
+- Icons: `app/icon.svg` is the logo (`public/images/dark_theme_logo.svg`) with its viewBox widened to a square; `app/icon.png` (512), `app/favicon.ico` (16/32/48) and `app/apple-icon.png` (180, logo on the site's dark background) are rendered from it with `sharp`. Regenerate all four if the logo changes.
+- `app/sitemap.ts` and `app/robots.ts`: `/sitemap.xml` and `/robots.txt`. Add new pages and case studies to `ROUTES` in the sitemap.
+- Structured data via `components/JsonLd.tsx`: FAQPage (rendered by the FAQ section on home, services and contact), an ItemList of Services on `/services`, and BreadcrumbList plus CreativeWork on the case study.
+- After launch: verify the domain in Google Search Console and Bing Webmaster Tools and submit the sitemap.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Status
+All pages linked from the navbar and footer exist. Placeholders to replace before launch: the four `TEAM` members, FAQ pricing and timeline answers, and the curtain menu's social links (`#`).

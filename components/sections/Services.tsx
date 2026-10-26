@@ -1,344 +1,173 @@
 "use client";
 
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Plus, Minus } from "lucide-react";
-import Link from "next/link";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
+import CtaLink from "@/components/CtaLink";
+import { motionTokens } from "@/components/arc/motion-tokens";
+import { SERVICE_ROWS } from "@/lib/services";
 
-gsap.registerPlugin(ScrollTrigger);
 
-const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+const ease = [...motionTokens.ease.enter] as [number, number, number, number];
 
-const services = [
-  {
-    id: "01",
-    title: "AI Integration",
-    description: "Leverage the power of artificial intelligence to automate processes, enhance decision-making, and create personalized experiences for your users.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2532&auto=format&fit=crop"
-  },
-  {
-    id: "02",
-    title: "Web Development",
-    description: "Build scalable, high-performance web applications with modern frameworks. We focus on responsive design, SEO optimization, and seamless user experiences.",
-    image: "https://images.unsplash.com/photo-1607799275518-d58665d099db?q=80&w=2670&auto=format&fit=crop"
-  },
-  {
-    id: "03",
-    title: "Mobile App Development",
-    description: "Create native and cross-platform mobile apps that engage users on the go. From concept to launch, we deliver robust solutions for iOS and Android.",
-    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2670&auto=format&fit=crop"
-  },
-  {
-    id: "04",
-    title: "Data Analytics",
-    description: "Turn raw data into actionable insights. Our analytics solutions help you understand user behavior, optimize performance, and drive business growth.",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
-  },
-  {
-    id: "05",
-    title: "Digital Marketing",
-    description: "Amplify your brand's reach with data-driven marketing strategies. We specialize in SEO, content marketing, and paid advertising to maximize ROI.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop"
-  }
-];
+// Each card is a step lighter than the one before, so the stack reads as depth on the dark theme.
+const SHADES = ["#0a0c11", "#0c1015", "#0e1319", "#10161d", "#121a22"];
+const DISCOVER_SHADE = "#141d26";
+// The old "Discover all capabilities" row's photo
+const DISCOVER_IMAGE = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=75&w=1600&auto=format&fit=crop";
 
-const textGradientDefault = {
-  backgroundImage: "linear-gradient(90deg, #ffffff, #ffffff, #ffffff)",
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  color: "#ffffff",
-  backgroundPosition: "0%"
-};
+// Desktop stacking: card i sticks STACK_TOP + i * PEEK below the viewport top, so each later card
+// slides over the earlier ones and leaves a PEEK-tall strip of each showing. Each card's header row is
+// exactly PEEK tall, so a stacked strip always shows the full title and number. The closing card takes
+// the next slot, so it lands under the stack instead of covering it, and then everything leaves together.
+const STACK_TOP = 112; // clears the collapsed navbar
+const PEEK = 96;
+const CARD_H = 416; // lg card height (26rem); fixed so the exit math below holds
 
-const textGradientHover = {
-  backgroundImage: "linear-gradient(90deg, #3b82f6, #7dd3fc, #3b82f6)",
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  color: "rgba(255, 255, 255, 0)",
-  backgroundPosition: ["0%", "200%"]
-};
+// Sticky cards are pushed out one by one, deepest bottom edge first, so on exit later cards would slide
+// over earlier ones. Extending every card's margin box down to the same line (the closing card's bottom)
+// makes the container push them all at once; a matching negative top margin on the next card cancels
+// the extra space, so layout is unchanged. Needs a flex column (no margin collapsing).
+// Clicking a stacked card pushes every later card down by EXPAND, revealing it in full.
+const EXPAND = CARD_H - PEEK;
 
-function ServiceItem({ service, index }: { service: typeof services[0], index: number }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => setIsHovered(!isHovered)}
-      className="group relative border-t border-neutral-800 cursor-pointer overflow-hidden"
-    >
-      {/* Background Image */}
-      <motion.div
-          className="absolute inset-0 z-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
-      >
-          <img 
-              src={service.image} 
-              alt={service.title} 
-              className="w-full h-full object-cover"
-          />
-          {/* Dark Overlay for Readability */}
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
-      </motion.div>
-
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="flex items-start justify-between gap-8">
-            {/* Content */}
-            <div className="flex items-start flex-1">
-                <div className="flex flex-col gap-4 w-full max-w-3xl">
-                    <motion.h3
-                        className="text-3xl md:text-5xl lg:text-6xl font-bold"
-                        initial={textGradientDefault}
-                        animate={isHovered ? textGradientHover : textGradientDefault}
-                        transition={{
-                            backgroundPosition: {
-                                duration: 3,
-                                repeat: Infinity,
-                                ease: "linear"
-                            },
-                            color: { duration: 0.2 }
-                        }}
-                    >
-                        {service.title}
-                    </motion.h3>
-                    
-                    {/* Description - Directly under header */}
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ 
-                            height: isHovered ? "auto" : 0,
-                            opacity: isHovered ? 1 : 0
-                        }}
-                        className="overflow-hidden"
-                    >
-                        <motion.p 
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ 
-                                y: isHovered ? 0 : 20,
-                                opacity: isHovered ? 1 : 0
-                            }}
-                            transition={{ duration: 0.4, delay: 0.1 }}
-                            className="text-lg text-neutral-300 leading-relaxed pt-2 font-medium"
-                        >
-                            {service.description}
-                        </motion.p>
-                    </motion.div>
-                </div>
-            </div>
-
-            {/* Arrow */}
-            <motion.div
-                animate={{ rotate: isHovered ? 45 : 0 }}
-                transition={{ duration: 0.3 }}
-                className="p-2 rounded-full border border-neutral-700 text-white group-hover:border-sky-400 group-hover:text-sky-400 transition-colors mt-2 shrink-0 bg-black/20 backdrop-blur-sm"
-            >
-                <ArrowRight className="w-6 h-6" />
-            </motion.div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MagneticButton({ children, href }: { children: React.ReactNode, href: string }) {
-    const ref = useRef<HTMLAnchorElement>(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        const { clientX, clientY } = e;
-        const { left, top, width, height } = ref.current!.getBoundingClientRect();
-        const x = (clientX - (left + width / 2)) * 0.35;
-        const y = (clientY - (top + height / 2)) * 0.35;
-        setPosition({ x, y });
-    };
-
-    const handleMouseLeave = () => {
-        setPosition({ x: 0, y: 0 });
-        setIsHovered(false);
-    };
-
-    const handleMouseEnter = () => {
-        setIsHovered(true);
-    }
-
-    return (
-        <motion.div
-            initial={{ x: 0, y: 0 }}
-            animate={{ x: position.x, y: position.y }}
-            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-            className="flex justify-center"
-        >
-            <Link
-                ref={ref}
-                href={href}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                onMouseEnter={handleMouseEnter}
-                className="group/btn relative overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-colors inline-block cursor-pointer"
-            >
-                <span className="relative z-10 transition-colors duration-300 group-hover/btn:text-white">{children}</span>
-                <motion.div
-                    className="absolute inset-0 bg-sky-400 z-0"
-                    initial={{ clipPath: "circle(0% at 0% 0%)" }}
-                    animate={{ clipPath: isHovered ? "circle(150% at 0% 0%)" : "circle(0% at 0% 0%)" }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                />
-            </Link>
-        </motion.div>
-    );
-}
-
-function DiscoverItem() {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => setIsHovered(!isHovered)}
-      className="group bottom-0 z-30 bg-neutral-950 border-t border-neutral-800 cursor-pointer overflow-hidden"
-    >
-      {/* Background Image */}
-      <motion.div
-          className="absolute inset-0 z-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
-      >
-          <img 
-              src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2670&auto=format&fit=crop"
-              alt="Discover"
-              className="w-full h-full object-cover"
-          />
-          {/* Dark Overlay for Readability */}
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
-      </motion.div>
-
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="flex items-start justify-between gap-8">
-            {/* Content */}
-            <div className="flex items-start flex-1 w-full">
-                <div className="flex flex-col gap-4 w-full">
-                    <motion.h3
-                        className="text-3xl md:text-5xl lg:text-6xl font-bold max-w-3xl"
-                        initial={textGradientDefault}
-                        animate={isHovered ? textGradientHover : textGradientDefault}
-                        transition={{
-                            backgroundPosition: {
-                                duration: 3,
-                                repeat: Infinity,
-                                ease: "linear"
-                            },
-                            color: { duration: 0.2 }
-                        }}
-                    >
-                        Discover all capabilities
-                    </motion.h3>
-                </div>
-            </div>
-
-            {/* Icon */}
-            <motion.div
-                className="p-2 rounded-full border border-neutral-700 text-white group-hover:border-sky-400 group-hover:text-sky-400 transition-colors mt-2 shrink-0 bg-black/20 backdrop-blur-sm relative w-10 h-10 flex items-center justify-center"
-            >
-                <Plus className={`w-6 h-6 absolute transition-all duration-300 ${isHovered ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`} />
-                <Minus className={`w-6 h-6 absolute transition-all duration-300 ${isHovered ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`} />
-            </motion.div>
-        </div>
-
-        {/* Button - Centered, below the row on mobile */}
-        <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{
-                height: isHovered ? "auto" : 0,
-                opacity: isHovered ? 1 : 0
-            }}
-            className="overflow-hidden w-full"
-        >
-            <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{
-                    y: isHovered ? 0 : 20,
-                    opacity: isHovered ? 1 : 0
-                }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="pt-6 flex justify-center"
-            >
-                <MagneticButton href="/services">
-                    What we do
-                </MagneticButton>
-            </motion.div>
-        </motion.div>
-      </div>
-    </div>
-  );
-}
+const stackMargins = (i: number, count: number) => ({
+  marginTop: i === 0 ? 0 : -(count - i + 1) * PEEK, // cancels the previous card's marginBottom
+  marginBottom: (count - i) * PEEK,
+});
 
 export default function Services() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const listRef = useRef<HTMLOListElement>(null);
+  const [expanded, setExpanded] = useState<number | null>(null);
 
-  useIsomorphicLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-        // Title Animation
-        gsap.from(titleRef.current, {
-            scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top 80%",
-                end: "top 50%",
-                scrub: 1,
-            },
-            y: 50,
-            opacity: 0,
-            duration: 1
-        });
+  // Scrolling away restores the plain stack, so the exit math (stackMargins) is never fighting an expansion.
+  // Small scrolls are ignored: focusing a card can scroll the page a few pixels, which must not undo Enter.
+  const openedAt = useRef(0);
+  useEffect(() => {
+    if (expanded === null) return;
+    openedAt.current = window.scrollY;
+    const onScroll = () => Math.abs(window.scrollY - openedAt.current) > 120 && setExpanded(null);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [expanded]);
 
-        // Staggered List Animation
-        const items = containerRef.current?.children;
-        if (items) {
-            gsap.from(items, {
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: "top 85%",
-                },
-                y: 50,
-                opacity: 0,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: "power3.out"
-            });
-        }
-    }, sectionRef);
+  // Later cards slide down by EXPAND. A transform (not the sticky `top`) so it works while the stack rests
+  // and while it is leaving, when the container end, not `top`, decides where cards sit.
+  const shift = (i: number): React.CSSProperties =>
+    expanded !== null && i > expanded ? { transform: `translateY(${EXPAND}px)` } : {};
 
-    return () => ctx.revert();
-  }, []);
+  // Click (or Enter/Space) toggles a card open, desktop only and only once the stack has formed:
+  // every card packed PEEK apart, wherever the stack currently sits (resting or leaving).
+  const toggle = (i: number) => {
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    if (expanded !== null) return setExpanded(expanded === i ? null : i);
+    const cards = listRef.current?.children;
+    const first = cards?.[0]?.getBoundingClientRect().top;
+    const closing = cards?.[SERVICE_ROWS.length]?.getBoundingClientRect().top;
+    if (first !== undefined && closing !== undefined && Math.abs(closing - first - SERVICE_ROWS.length * PEEK) < 2) setExpanded(i);
+  };
+  const fadeUp = {
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: 40 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, margin: "-10% 0px" },
+    transition: { duration: 0.8, ease },
+  };
 
   return (
-    <section ref={sectionRef} id="services" className="relative z-20 min-h-screen py-32 bg-neutral-950 text-white flex flex-col justify-center">
-      <div className="container mx-auto px-4 mb-20">
-        <div ref={titleRef} className="max-w-4xl">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white via-blue-50 to-blue-300 mb-6">
-                Our Expertise
-            </h2>
-            <p className="text-xl text-neutral-400 max-w-2xl">
-                We combine strategy, design, and technology to build digital products that transform businesses.
-            </p>
-        </div>
-      </div>
+    <section id="services" className="relative overflow-clip border-t border-white/10 px-4 md:px-8">
+      <div className="mx-auto max-w-7xl">
+        <motion.div {...fadeUp} className="max-w-4xl px-6 pt-24 pb-16 md:px-12 md:pt-32 md:pb-20">
+          <h2 className="mb-6 text-4xl tracking-[-0.02em] md:text-5xl lg:text-6xl">Services</h2>
+          <p className="max-w-2xl text-xl leading-relaxed text-(--fg-muted)">
+            We combine strategy, design and technology to build products, then market them so they reach the people they were made for.
+          </p>
+        </motion.div>
 
-      <div ref={containerRef} className="w-full border-b border-neutral-800">
-          {services.map((service, index) => (
-              <ServiceItem key={service.id} service={service} index={index} />
+        <ol
+          ref={listRef}
+          className="flex flex-col"
+        >
+          {SERVICE_ROWS.map((service, i) => (
+            <li
+              key={service.title}
+              className="border-t border-white/10 shadow-[0_-24px_48px_-24px_rgba(0,0,0,0.7)] lg:sticky lg:cursor-pointer lg:transition-transform lg:duration-500 lg:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+              style={{
+                backgroundColor: SHADES[i],
+                top: STACK_TOP + i * PEEK,
+                ...shift(i),
+                ...stackMargins(i, SERVICE_ROWS.length),
+                "--peek": `${PEEK}px`,
+                "--card-h": `${CARD_H}px`,
+              } as React.CSSProperties}
+            >
+              <article
+                role="button"
+                tabIndex={0}
+                aria-expanded={expanded === i}
+                aria-label={`${service.title}: ${expanded === i ? "collapse" : "expand"}`}
+                onClick={() => toggle(i)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggle(i);
+                  }
+                }}
+                className="grid gap-8 rounded-sm p-6 outline-none focus-visible:ring-2 focus-visible:ring-[#7ee3ff]/60 md:p-8 lg:h-(--card-h) lg:grid-cols-[5fr_7fr] lg:gap-16 lg:px-6 lg:pt-0 lg:pb-6 lg:pr-12">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/10 lg:mt-6 lg:aspect-auto lg:min-h-[22rem]">
+                  <Image
+                    src={service.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 40vw, 100vw"
+                    className="object-cover brightness-[0.8] saturate-[0.85]"
+                  />
+                  <div aria-hidden className="absolute inset-0 bg-linear-to-tr from-[#2f9be0]/15 via-transparent to-transparent" />
+                </div>
+
+                <div className="flex flex-col gap-6 lg:gap-2">
+                  <div className="flex items-start justify-between gap-6 lg:h-(--peek) lg:items-center">
+                    <h3 className={`text-3xl leading-tight tracking-[-0.02em] transition-colors duration-500 md:text-4xl lg:text-[2.75rem] ${expanded === i ? "text-[#7ee3ff]" : "text-white"}`}>
+                      {service.title}
+                    </h3>
+                    <span className="text-3xl leading-none text-white/30 tabular-nums md:text-4xl lg:text-[2.75rem]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <p className="max-w-xl text-lg leading-relaxed text-(--fg-muted)">{service.description}</p>
+                </div>
+              </article>
+            </li>
           ))}
-          
-          <DiscoverItem />
+
+          {/* Closing card: takes the next slot in the stack */}
+          <li
+            className="border-t border-white/10 shadow-[0_-24px_48px_-24px_rgba(0,0,0,0.7)] lg:sticky lg:transition-transform lg:duration-500 lg:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            style={{
+              backgroundColor: DISCOVER_SHADE,
+              top: STACK_TOP + SERVICE_ROWS.length * PEEK,
+              ...shift(SERVICE_ROWS.length),
+              ...stackMargins(SERVICE_ROWS.length, SERVICE_ROWS.length),
+              "--card-h": `${CARD_H}px`,
+            } as React.CSSProperties}
+          >
+            <div className="grid gap-8 p-6 pb-16 md:p-8 md:pb-20 lg:h-(--card-h) lg:grid-cols-[5fr_7fr] lg:gap-16 lg:px-6 lg:pt-0 lg:pb-6 lg:pr-12">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/10 lg:mt-6 lg:aspect-auto lg:min-h-[22rem]">
+                <Image src={DISCOVER_IMAGE} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover brightness-[0.8] saturate-[0.85]" />
+                <div aria-hidden className="absolute inset-0 bg-linear-to-tr from-[#2f9be0]/15 via-transparent to-transparent" />
+              </div>
+              <motion.div {...fadeUp} className="flex flex-col items-start gap-10 lg:pt-5">
+                <p className="max-w-2xl text-3xl leading-[1.2] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl">
+                  Discover all our capabilities and how we turn ideas into products that <span className="text-[#7ee3ff]">grow.</span>
+                </p>
+                <CtaLink href="/services" variant="secondary">What we do</CtaLink>
+              </motion.div>
+            </div>
+          </li>
+
+          {/* Hold: keeps the finished stack in place for a stretch of scrolling (time to read and hover) before it all leaves together */}
+          <li aria-hidden className="hidden h-[40vh] lg:block" />
+        </ol>
       </div>
     </section>
   );

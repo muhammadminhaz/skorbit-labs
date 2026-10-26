@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useRef, useState, useEffect } from "react";
@@ -14,6 +15,7 @@ interface GlowBlockProps {
   shape?: "square" | "pill" | "asymmetric" | "circle";
   glowColor?: string;
   onClick?: () => void;
+  glass?: string;
 }
 
 const GlowBlock = ({
@@ -24,7 +26,8 @@ const GlowBlock = ({
   containerHovered,
   shape = "square",
   glowColor = "rgba(34, 197, 94, 0.8), rgba(59, 130, 246, 0.8)",
-  onClick
+  onClick,
+  glass
 }: GlowBlockProps) => {
   const blockRef = useRef<HTMLDivElement>(null);
   const [localMousePos, setLocalMousePos] = useState({ x: -1000, y: -1000 });
@@ -55,6 +58,7 @@ const GlowBlock = ({
     <div
       ref={blockRef}
       onClick={onClick}
+      data-glass={glass}
       className={`relative group bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center transition-[background-color,border-color,transform] duration-200 whitespace-nowrap overflow-hidden h-14 ${shapeStyles[shape]} ${className}`}
     >
       {/* Border Glow Effect */}
@@ -86,7 +90,7 @@ export default function Navbar() {
   const sectionColors: Record<string, string> = {
     hero: "rgba(239, 68, 68, 0.8), rgba(153, 27, 27, 0.8)", // Red
     "featured-work": "rgba(34, 197, 94, 0.8), rgba(21, 128, 61, 0.8)", // Green
-    introduction: "rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.8)", // Blue
+    "who-we-are": "rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.8)", // Blue
     services: "rgba(249, 115, 22, 0.8), rgba(194, 65, 12, 0.8)", // Orange
     testimonials: "rgba(239, 68, 68, 0.8), rgba(153, 27, 27, 0.8)", // Red
     contact: "rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.8)", // Blue
@@ -102,14 +106,8 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    // If we're not on the home page, set active section based on pathname
-    if (pathname !== "/") {
-      if (pathname.includes("/work")) setActiveSection("featured-work");
-      else if (pathname.includes("/about")) setActiveSection("introduction");
-      else if (pathname.includes("/services")) setActiveSection("services");
-      else if (pathname.includes("/contact")) setActiveSection("contact");
-      else if (pathname.includes("/testimonials")) setActiveSection("testimonials");
-    } else {
+    // Off the home page the section comes from the pathname (derived below), so only observe on "/".
+    if (pathname === "/") {
       const observerOptions = {
         root: null,
         rootMargin: '-20% 0px -70% 0px',
@@ -125,7 +123,7 @@ export default function Navbar() {
       };
 
       const observer = new IntersectionObserver(handleIntersect, observerOptions);
-      const sections = ["hero", "featured-work", "introduction", "services", "testimonials", "contact"];
+      const sections = ["hero", "featured-work", "who-we-are", "services", "testimonials", "contact"];
 
       sections.forEach((id) => {
         const el = document.getElementById(id);
@@ -147,10 +145,19 @@ export default function Navbar() {
     setMousePos({ x: Math.round(e.clientX), y: Math.round(e.clientY) });
   };
 
-  const currentGlowColor = sectionColors[activeSection] || sectionColors.hero;
+  const pathSection =
+    pathname === "/" ? null
+    : pathname.includes("/work") ? "featured-work"
+    : pathname.includes("/about") ? "who-we-are"
+    : pathname.includes("/services") ? "services"
+    : pathname.includes("/contact") ? "contact"
+    : pathname.includes("/testimonials") ? "testimonials"
+    : null;
+  const currentGlowColor = sectionColors[pathSection ?? activeSection] || sectionColors.hero;
 
   return (
-    <div className={`fixed left-0 w-full z-50 flex flex-col items-center px-4 transition-all duration-500 ease-in-out ${isScrolled ? "top-4 md:top-8" : "top-8"
+    // .site-nav: own snapshot during page transitions, so it stays put above both pages (globals.css)
+    <div className={`site-nav fixed left-0 w-full z-50 flex flex-col items-center px-4 transition-all duration-500 ease-in-out ${isScrolled ? "top-4 md:top-8" : "top-8"
       }`}>
       <nav
         onMouseMove={handleMouseMove}
@@ -163,10 +170,11 @@ export default function Navbar() {
           className="absolute inset-0 bg-white/5 backdrop-blur-md border border-white/5 rounded-sm -z-10 opacity-0 transition-opacity duration-500"
         />
 
-        {/* Menus Block - Top on mobile, Center on desktop */}
+        {/* Menus Block - Top on mobile, Center on desktop. Clipped, not faded: an opacity < 1 wrapper would switch
+            off the pill's backdrop blur until the fade finished. */}
         <div className={`order-1 md:order-2 transition-all duration-500 ease-in-out overflow-hidden ${isScrolled
-            ? "max-h-0 opacity-0 -translate-y-4 pointer-events-none md:max-h-20 md:max-w-0 md:opacity-0 md:translate-y-0 md:mx-0"
-            : "max-h-20 opacity-100 translate-y-0 md:max-w-[600px] md:opacity-100 md:mx-2"
+            ? "max-h-0 -translate-y-4 pointer-events-none md:max-h-20 md:max-w-0 md:translate-y-0 md:mx-0"
+            : "max-h-20 translate-y-0 md:max-w-[600px] md:mx-2"
           }`}>
           <GlowBlock
             mousePos={mousePos}
@@ -174,6 +182,7 @@ export default function Navbar() {
             containerHovered={isHovered}
             shape="pill"
             glowColor={currentGlowColor}
+            glass={isScrolled ? undefined : "menu"}
             className="px-4"
           >
             <ul className="flex items-center">
@@ -211,9 +220,11 @@ export default function Navbar() {
               containerHovered={isHovered}
               shape="asymmetric"
               glowColor={currentGlowColor}
+              glass="brand"
               className="px-4 md:px-6"
             >
-              <Link href="/" className="font-bold text-base md:text-lg tracking-tight text-white">
+              <Link href="/" className="flex items-center gap-2.5 text-base md:text-lg text-white">
+                <Image src="/images/dark_theme_logo.svg" alt="" width={374} height={455} priority className="h-7 w-auto" />
                 Skorbit Labs
               </Link>
             </GlowBlock>
@@ -228,6 +239,7 @@ export default function Navbar() {
               shape="circle"
               glowColor={currentGlowColor}
               onClick={() => setIsCurtainOpen(true)}
+              glass="dots"
               className="cursor-pointer"
             >
               <div className="grid grid-cols-3 gap-1 group/dots">
