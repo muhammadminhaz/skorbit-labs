@@ -13,7 +13,7 @@ npm run build && npm start
 ```
 
 ## Structure
-- `app/layout.tsx`: Convergence font, metadata, the global `Navbar`, and the site-wide grid (one hairline down each side of the `max-w-7xl` content column, drawn over every section). Sections separate with a full-width `border-t border-white/10`.
+- `app/layout.tsx`: Convergence font, metadata, Vercel Analytics (`<Analytics />`, tracks every page), the global `Navbar`, and the site-wide grid (one hairline down each side of the `max-w-7xl` content column, drawn over every section). Sections separate with a full-width `border-t border-white/10`.
 - `app/globals.css`: dark color tokens on `:root`, plus the tokens the vendored Arc button reads.
 - `components/Navbar.tsx`, `components/CurtainMenu.tsx`: carried over from the old site. The studio block shows the mark (`public/images/dark_theme_logo.svg`) beside "Skorbit Labs".
 - `components/sections/Hero.tsx`: headline, subheading and two CTAs (Book a call, Explore our work), with a frosted-glass four-cell service strip along the bottom (AI Integration, Software Development, Marketing, SEO). The CTAs share one grid track so both take the wider label's width; text is centered.

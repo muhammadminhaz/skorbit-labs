@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Convergence } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <div className="mx-auto h-full max-w-7xl border-x border-white/10" />
           </div>
         </div>
+        <Analytics />
       </body>
     </html>
   );

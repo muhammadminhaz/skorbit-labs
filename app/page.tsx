@@ -7,7 +7,6 @@ import Services from "@/components/sections/Services";
 import Process from "@/components/sections/Process";
 import FAQ from "@/components/sections/FAQ";
 import Contact from "@/components/sections/Contact";
-import {Analytics} from "@vercel/analytics/next"
 
 export const metadata: Metadata = pageMeta({
     description: DEFAULT_DESCRIPTION,
@@ -24,7 +23,6 @@ export default function Home() {
             <Process/>
             <FAQ/>
             <Contact/>
-            <Analytics/>
         </main>
     );
 }
