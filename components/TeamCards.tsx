@@ -10,7 +10,7 @@ export default function TeamCards() {
       <ul className="grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {TEAM.map((m) => (
           <li key={m.name} className="w-full max-w-[340px]">
-            <ProfileCard name={m.name} title={m.role} avatarUrl={m.photo} holo={0.6} className="w-full" />
+            <ProfileCard name={m.name} title={m.role.replace(" & ", "\n")} avatarUrl={m.photo} holo={0.6} className="w-full" />
           </li>
         ))}
       </ul>

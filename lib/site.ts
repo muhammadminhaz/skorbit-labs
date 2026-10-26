@@ -10,8 +10,8 @@ export type TeamMember = { name: string; role: string; photo: string; country: s
 
 // Photos go in /public/images/team: square head-and-shoulders crops, eyes about 40% from the top.
 export const TEAM: TeamMember[] = [
-  { name: "Rasul Al Foysal Redoy", role: "Founder & CEO", photo: "/images/team/redoy.jpg", country: "Saudi Arabia" },
-  { name: "Ahmad Al Hasib", role: "Managing Director", photo: "/images/team/hasib.jpg", country: "Australia" },
-  { name: "Md Asiful Islam", role: "Chief Marketing Officer", photo: "/images/team/asiful.jpg", country: "Bangladesh" },
-  { name: "Md Minhazur Rahman", role: "Chief Technology Officer", photo: "/images/team/minhaz.jpg", country: "Bangladesh" },
+  { name: "Rasul Al Foysal Redoy", role: "Co-Founder & Creative Director", photo: "/images/team/redoy.jpg", country: "Saudi Arabia" },
+  { name: "Ahmad Al Hasib", role: "Co-Founder & Chief Executive Officer", photo: "/images/team/hasib.jpg", country: "Australia" },
+  { name: "Md Asiful Islam", role: "Co-Founder & Chief Marketing Officer", photo: "/images/team/asiful.jpg", country: "Bangladesh" },
+  { name: "Md Minhazur Rahman", role: "Co-Founder & Chief Technology Officer", photo: "/images/team/minhaz.jpg", country: "Bangladesh" },
 ];

@@ -44,7 +44,7 @@ export const ORGANIZATION = {
     image: `${SITE_URL}${m.photo}`,
     homeLocation: { "@type": "Country", name: m.country },
   })),
-  founder: TEAM.filter((m) => m.role.startsWith("Founder")).map((m) => ({ "@type": "Person", name: m.name })),
+  founder: TEAM.filter((m) => m.role.includes("Founder")).map((m) => ({ "@type": "Person", name: m.name })),
   knowsLanguage: ["en"],
   knowsAbout: SERVICE_ROWS.map((s) => s.title),
   contactPoint: { "@type": "ContactPoint", contactType: "sales", email: CONTACT_EMAIL, availableLanguage: ["English"], areaServed: "Worldwide" },
