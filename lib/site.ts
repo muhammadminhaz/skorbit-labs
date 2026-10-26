@@ -12,6 +12,6 @@ export type TeamMember = { name: string; role: string; photo: string; country: s
 export const TEAM: TeamMember[] = [
   { name: "Rasul Al Foysal Redoy", role: "Co-Founder & Creative Director", photo: "/images/team/redoy.jpg", country: "Saudi Arabia" },
   { name: "Ahmad Al Hasib", role: "Co-Founder & Chief Executive Officer", photo: "/images/team/hasib.jpg", country: "Australia" },
-  { name: "Md Asiful Islam", role: "Co-Founder & Chief Marketing Officer", photo: "/images/team/asiful.jpg", country: "Bangladesh" },
+  { name: "Md Asiful Islam", role: "Co-Founder & Chief Operation Officer (COO)", photo: "/images/team/asiful.jpg", country: "Bangladesh" },
   { name: "Md Minhazur Rahman", role: "Co-Founder & Chief Technology Officer", photo: "/images/team/minhaz.jpg", country: "Bangladesh" },
 ];
