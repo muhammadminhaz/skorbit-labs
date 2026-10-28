@@ -3,6 +3,7 @@
 // Vendored from React Bits ProfileCard (holo card). Trimmed: footer (handle, status, contact) and device-orientation tilt.
 
 import { memo, useEffect, useRef, type CSSProperties } from 'react';
+import { getImageProps } from 'next/image';
 
 type Palette = 'dark' | 'light';
 
@@ -181,6 +182,11 @@ const TILE =
 const LAYER = 'pointer-events-none absolute inset-0 rounded-[inherit]';
 const HOLO = `${LAYER} [mix-blend-mode:var(--pc-blend)]`;
 const HOLO_LAYER = 'absolute inset-0';
+// Portraits are square; the card is at most 340px wide and the photo overscans it by the parallax margin
+const photoProps = (src: string) => {
+  const { props } = getImageProps({ src, alt: '', width: 800, height: 800, sizes: '360px' });
+  return { src: props.src, srcSet: props.srcSet, sizes: props.sizes, decoding: props.decoding };
+};
 const PHOTO = 'pointer-events-none absolute select-none object-cover object-bottom';
 const INFO = 'absolute bottom-[18px] left-5 right-5 text-white';
 const NAME = 'm-0 text-[20px] font-semibold leading-[1.25] tracking-[-0.01em] text-[inherit]';
@@ -411,10 +417,11 @@ const ProfileCard = ({
           {avatarUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
+              // Optimized srcset (WebP, sized to the card) from next/image; positioning stays on PHOTO_STYLE
+              {...photoProps(avatarUrl)}
+              alt={name || ''}
               className={PHOTO}
               style={PHOTO_STYLE}
-              src={avatarUrl}
-              alt={name || ''}
               loading="lazy"
               draggable={false}
             />

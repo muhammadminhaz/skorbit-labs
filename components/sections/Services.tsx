@@ -101,19 +101,11 @@ export default function Services() {
                 "--card-h": `${CARD_H}px`,
               } as React.CSSProperties}
             >
+              {/* The whole card is clickable; the title's button is the keyboard and screen-reader control
+                  (its click bubbles here), and the ring wraps the card while it has focus */}
               <article
-                role="button"
-                tabIndex={0}
-                aria-expanded={expanded === i}
-                aria-label={`${service.title}: ${expanded === i ? "collapse" : "expand"}`}
                 onClick={() => toggle(i)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    toggle(i);
-                  }
-                }}
-                className="grid gap-8 rounded-sm p-6 outline-none focus-visible:ring-2 focus-visible:ring-[#7ee3ff]/60 md:p-8 lg:h-(--card-h) lg:grid-cols-[5fr_7fr] lg:gap-16 lg:px-6 lg:pt-0 lg:pb-6 lg:pr-12">
+                className="grid gap-8 rounded-sm p-6 has-[button:focus-visible]:ring-2 has-[button:focus-visible]:ring-[#7ee3ff]/60 md:p-8 lg:h-(--card-h) lg:grid-cols-[5fr_7fr] lg:gap-16 lg:px-6 lg:pt-0 lg:pb-6 lg:pr-12">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/10 lg:mt-6 lg:aspect-auto lg:min-h-[22rem]">
                   <Image
                     src={service.image}
@@ -128,7 +120,9 @@ export default function Services() {
                 <div className="flex flex-col gap-6 lg:gap-2">
                   <div className="flex items-start justify-between gap-6 lg:h-(--peek) lg:items-center">
                     <h3 className={`text-3xl leading-tight tracking-[-0.02em] transition-colors duration-500 md:text-4xl lg:text-[2.75rem] ${expanded === i ? "text-[#7ee3ff]" : "text-white"}`}>
-                      {service.title}
+                      <button type="button" aria-expanded={expanded === i} className="text-left outline-none lg:cursor-pointer">
+                        {service.title}
+                      </button>
                     </h3>
                     <span className="text-3xl leading-none text-white/30 tabular-nums md:text-4xl lg:text-[2.75rem]">
                       {String(i + 1).padStart(2, "0")}

@@ -66,8 +66,15 @@ export default function FlutedGlassShader({ className = "" }: { className?: stri
 
   useEffect(() => {
     const canvas = ref.current!;
-    const gl = canvas.getContext("webgl", { antialias: false });
+    // Software WebGL (no GPU, e.g. Lighthouse/PageSpeed or disabled acceleration) runs this shader on the CPU
+    // and blocks the main thread every frame, so it gets one still frame instead of the loop
+    const fast = canvas.getContext("webgl", { antialias: false, failIfMajorPerformanceCaveat: true });
+    const gl = fast ?? canvas.getContext("webgl", { antialias: false });
     if (!gl) return; // the CSS gradient behind the canvas stays as the fallback
+    // Chrome hands SwiftShader out as a Vulkan device, so the caveat flag alone misses it; the renderer name doesn't
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    const software = !fast || /swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer);
 
     const compile = (type: number, src: string) => {
       const sh = gl.createShader(type)!;
@@ -95,11 +102,11 @@ export default function FlutedGlassShader({ className = "" }: { className?: stri
     const uRes = gl.getUniformLocation(prog, "uRes");
     const uTime = gl.getUniformLocation(prog, "uTime");
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // ponytail: fixed DPR cap; drop to 1 if low-end phones stutter
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const reduce = software || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // ponytail: fixed DPR cap; drop to 1 if low-end phones stutter. Software WebGL's still frame renders at 1x to keep it cheap.
+    const dpr = software ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
     let raf = 0;
-    let visible = true;
+    let visible = false; // set by the IntersectionObserver's first callback
     const start = performance.now();
 
     const draw = (now: number) => {
@@ -116,18 +123,18 @@ export default function FlutedGlassShader({ className = "" }: { className?: stri
       canvas.height = Math.round(canvas.clientHeight * dpr);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uRes, canvas.width, canvas.height);
-      if (!raf) draw(performance.now());
+      if (visible && !raf) draw(performance.now()); // off screen, the next visible frame redraws
     };
 
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
-    // Pause when scrolled away so the GPU idles
+    // Draws only on screen: starts (or, when still, draws one frame) as it comes into view and pauses when
+    // scrolled away, so the GPU idles and the footer's copy costs nothing on load
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible && !raf && !reduce) raf = requestAnimationFrame(loop);
+      if (visible && !raf) raf = requestAnimationFrame(loop);
     });
     io.observe(canvas);
-    raf = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(raf);

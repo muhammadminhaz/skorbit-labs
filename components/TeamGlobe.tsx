@@ -31,64 +31,73 @@ export default function TeamGlobe() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let size = wrap.offsetWidth;
+    let size = 0;
     let phi = START_PHI;
     let visible = false;
     let raf = 0;
-    let globe: Globe;
+    let globe: Globe | undefined;
 
-    try {
-      globe = createGlobe(canvas, {
-        devicePixelRatio: dpr,
-        width: size * dpr,
-        height: size * dpr,
-        phi,
-        theta: 0.2,
-        dark: 1,
-        diffuse: 1.2,
-        mapSamples: 16000,
-        mapBrightness: 5,
-        baseColor: [0.16, 0.2, 0.26],
-        markerColor: CYAN,
-        glowColor: [0.12, 0.28, 0.42],
-        markers: PLACES.map((p) => ({ id: p.id, location: p.location, size: 0.06 })),
-        arcs: [
-          { id: "sa-bd", from: PLACES[0].location, to: PLACES[1].location },
-          { id: "bd-au", from: PLACES[1].location, to: PLACES[2].location },
-          { id: "sa-au", from: PLACES[0].location, to: PLACES[2].location },
-        ],
-        arcColor: BLUE,
-        arcWidth: 0.6,
-        arcHeight: 0.25,
-        markerElevation: 0.02,
-      });
-    } catch {
-      return; // No WebGL: the section reads fine without the globe
-    }
+    const create = () => {
+      size = wrap.offsetWidth;
+      try {
+        globe = createGlobe(canvas, {
+          devicePixelRatio: dpr,
+          width: size * dpr,
+          height: size * dpr,
+          phi,
+          theta: 0.2,
+          dark: 1,
+          diffuse: 1.2,
+          mapSamples: 16000,
+          mapBrightness: 5,
+          baseColor: [0.16, 0.2, 0.26],
+          markerColor: CYAN,
+          glowColor: [0.12, 0.28, 0.42],
+          markers: PLACES.map((p) => ({ id: p.id, location: p.location, size: 0.06 })),
+          arcs: [
+            { id: "sa-bd", from: PLACES[0].location, to: PLACES[1].location },
+            { id: "bd-au", from: PLACES[1].location, to: PLACES[2].location },
+            { id: "sa-au", from: PLACES[0].location, to: PLACES[2].location },
+          ],
+          arcColor: BLUE,
+          arcWidth: 0.6,
+          arcHeight: 0.25,
+          markerElevation: 0.02,
+        });
+      } catch {
+        return; // No WebGL: the section reads fine without the globe
+      }
+      ro.observe(wrap);
+      requestAnimationFrame(() => (canvas.style.opacity = "1"));
+    };
 
     const tick = () => {
+      if (!globe) return;
       if (!reduce) phi += SPEED;
       globe.update({ phi });
       if (visible && !reduce) raf = requestAnimationFrame(tick);
     };
-    const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      cancelAnimationFrame(raf);
-      if (visible) raf = requestAnimationFrame(tick);
-    });
+    // The globe is built the first time it nears the viewport, keeping its WebGL setup off the initial page load
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        cancelAnimationFrame(raf);
+        if (visible && !globe) create();
+        if (visible) raf = requestAnimationFrame(tick);
+      },
+      { rootMargin: "300px 0px" },
+    );
     const ro = new ResizeObserver(() => {
       size = wrap.offsetWidth;
-      globe.update({ width: size * dpr, height: size * dpr });
+      globe?.update({ width: size * dpr, height: size * dpr });
     });
     io.observe(wrap);
-    ro.observe(wrap);
-    requestAnimationFrame(() => (canvas.style.opacity = "1"));
 
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
       ro.disconnect();
-      globe.destroy();
+      globe?.destroy();
     };
   }, []);
 

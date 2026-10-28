@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+    // Tailwind CSS is small (~18 KB), so inlining it in <head> removes the render-blocking stylesheet request
+    inlineCss: true,
   },
 };
 

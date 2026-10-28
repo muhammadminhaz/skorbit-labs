@@ -10,8 +10,8 @@ export const DEFAULT_DESCRIPTION =
   "Skorbit Labs is a software and digital growth studio building websites, mobile apps, SaaS and AI integrations for ambitious businesses worldwide.";
 
 // Per-page metadata. Child openGraph replaces the layout's, so every page restates the shared fields here.
-// Share image is app/opengraph-image.png. Named here too: a page's own openGraph drops the inherited file image.
-const OG_IMAGE = { url: "/opengraph-image.png", width: 1200, height: 630, alt: `${SITE_NAME}: ${SLOGAN} Web, mobile and AI studio for clients worldwide.` };
+// Share image is app/opengraph-image.jpg (JPEG keeps it near 100 KB; WhatsApp drops previews over ~300 KB). Named here too: a page's own openGraph drops the inherited file image.
+const OG_IMAGE = { url: "/opengraph-image.jpg", width: 1200, height: 630, alt: `${SITE_NAME}: ${SLOGAN} Web, mobile and AI studio for clients worldwide.` };
 export function pageMeta({ title, description, path }: { title?: string; description: string; path: string }): Metadata {
   const fullTitle = title ? TITLE_TEMPLATE.replace("%s", title) : DEFAULT_TITLE;
   return {
@@ -30,7 +30,7 @@ export const ORGANIZATION = {
   name: SITE_NAME,
   url: SITE_URL,
   logo: `${SITE_URL}/icon.png`,
-  image: `${SITE_URL}/opengraph-image.png`,
+  image: `${SITE_URL}/opengraph-image.jpg`,
   slogan: SLOGAN,
   email: CONTACT_EMAIL,
   description: DEFAULT_DESCRIPTION,

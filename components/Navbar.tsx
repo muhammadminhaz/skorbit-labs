@@ -202,7 +202,7 @@ export default function Navbar() {
                     </Link>
                   </li>
                   {index < navLinks.length - 1 && (
-                    <span className="mx-2 md:mx-3 text-white/20 text-xs font-light">|</span>
+                    <li aria-hidden className="mx-2 md:mx-3 text-white/20 text-xs font-light">|</li>
                   )}
                 </React.Fragment>
               ))}

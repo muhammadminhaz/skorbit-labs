@@ -126,6 +126,15 @@ html, body {
   .cta-arrow { transition: none; }
 }
 
+/* ---------- Hero entrance (components/sections/Hero.tsx) ---------- */
+/* Pure CSS so the copy paints before JavaScript loads; --rise-delay staggers the words */
+.hero-rise { animation: hero-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--rise-delay, 0s) both; }
+@keyframes hero-rise { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } }
+@keyframes hero-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise { animation-name: hero-fade; }
+}
+
 /* ---------- Page transitions (see app/template.tsx) ---------- */
 /* The browser holds a snapshot of the old page while an edge sweeps down the screen with the curtain menu's
    motion (CurtainMenu.tsx: 0.8s, cubic-bezier(0.76, 0, 0.24, 1)). Neither page moves: above the edge is the new
