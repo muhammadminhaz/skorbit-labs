@@ -7,6 +7,8 @@ import Services from "@/components/sections/Services";
 import Process from "@/components/sections/Process";
 import FAQ from "@/components/sections/FAQ";
 import Contact from "@/components/sections/Contact";
+import JsonLd from "@/components/JsonLd";
+import {FAQ_PAGE} from "@/lib/faqs";
 
 export const metadata: Metadata = pageMeta({
     description: DEFAULT_DESCRIPTION,
@@ -16,6 +18,7 @@ export const metadata: Metadata = pageMeta({
 export default function Home() {
     return (
         <main>
+            <JsonLd data={FAQ_PAGE}/>
             <Hero/>
             <FeaturedWork/>
             <WhoWeAre/>

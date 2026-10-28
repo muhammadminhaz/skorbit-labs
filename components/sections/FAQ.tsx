@@ -1,46 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Plus } from "lucide-react";
 import CtaLink from "@/components/CtaLink";
-import JsonLd from "@/components/JsonLd";
 import { motionTokens } from "@/components/arc/motion-tokens";
+import { FAQS } from "@/lib/faqs";
 
 const ease = [...motionTokens.ease.enter] as [number, number, number, number];
-
-const FAQS = [
-  {
-    q: "What kinds of projects do you take on?",
-    a: "Web apps, mobile apps, custom software and AI features, plus the marketing and SEO that grow them. No project is too small for our best work.",
-  },
-  {
-    q: "How long does a typical project take?",
-    a: "A focused website usually takes 3 to 6 weeks; a product or app MVP 8 to 14 weeks. After discovery you get a timeline with clear milestones, and we flag early if anything changes.",
-  },
-  {
-    q: "How much does it cost?",
-    a: "It depends on scope. After a short discovery call we send a fixed estimate with the trade-offs spelled out, so you know what you are paying for before we start.",
-  },
-  {
-    q: "Do you work with startups or established businesses?",
-    a: "Both. We help founders get a first version to market and help established teams modernize, add AI or grow an existing product.",
-  },
-  {
-    q: "Will I own the code and designs?",
-    a: "Yes. Everything we make for you, code, designs and content, is yours, documented and handed over in your own accounts.",
-  },
-  {
-    q: "Do you offer support after launch?",
-    a: "Yes. We stay on for maintenance, improvements and ongoing marketing and SEO, so the product keeps growing after it ships.",
-  },
-  {
-    q: "Can you improve a product we already have?",
-    a: "Yes. We start with an audit of the code, design and analytics, then fix what is actually holding it back before adding anything new.",
-  },
-];
 
 function Item({ q, a, open, onToggle, id }: { q: string; a: string; open: boolean; onToggle: () => void; id: string }) {
   const reduce = useReducedMotion();
@@ -49,6 +18,7 @@ function Item({ q, a, open, onToggle, id }: { q: string; a: string; open: boolea
       <h3>
         <button
           type="button"
+          id={`${id}-q`}
           onClick={onToggle}
           aria-expanded={open}
           aria-controls={id}
@@ -63,21 +33,20 @@ function Item({ q, a, open, onToggle, id }: { q: string; a: string; open: boolea
           </span>
         </button>
       </h3>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            id={id}
-            role="region"
-            initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            animate={reduce ? { opacity: 1 } : { height: "auto", opacity: 1 }}
-            exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease }}
-            className="overflow-hidden"
-          >
-            <p className="px-5 pb-5 leading-relaxed text-(--fg-muted) md:px-6 md:pb-6">{a}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Always mounted so every answer is in the server HTML; inert keeps closed answers out of tab order and the accessibility tree */}
+      <motion.div
+        id={id}
+        role="region"
+        aria-labelledby={`${id}-q`}
+        inert={!open}
+        initial={false}
+        animate={open ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+        // Reduced motion: fade only, height snaps (after the fade when closing)
+        transition={reduce ? { duration: 0.35, ease, height: { duration: 0, delay: open ? 0 : 0.35 } } : { duration: 0.35, ease }}
+        className="overflow-hidden"
+      >
+        <p className="px-5 pb-5 leading-relaxed text-(--fg-muted) md:px-6 md:pb-6">{a}</p>
+      </motion.div>
     </li>
   );
 }
@@ -97,11 +66,6 @@ export default function FAQ() {
 
   return (
     <section id="faq" className="relative border-t border-white/10 px-4 md:px-8">
-      <JsonLd data={{
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: FAQS.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
-      }} />
       <div className="mx-auto max-w-7xl px-6 py-24 md:px-12 md:py-32">
         <motion.div {...fadeUp()} className="mb-14 flex flex-col gap-4 md:mb-16">
           <h2 className="text-4xl leading-[1.08] tracking-[-0.02em] md:text-5xl lg:text-6xl">FAQ</h2>
