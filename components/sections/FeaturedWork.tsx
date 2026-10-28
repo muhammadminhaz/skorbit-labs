@@ -79,7 +79,7 @@ function ProjectCard({ project, index, hoveredId, setHoveredId }: {
               src={project.image}
               alt={`${project.title} landing page`}
               fill
-              sizes="(min-width: 768px) 50vw, 100vw"
+              sizes="(min-width: 1344px) 576px, (min-width: 768px) calc(50vw - 96px), calc(100vw - 80px)"
               className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
             />
             <motion.div

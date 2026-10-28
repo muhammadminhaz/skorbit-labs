@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CONTACT_EMAIL, SITE_NAME, SITE_URL, SLOGAN, TEAM, TEAM_COUNTRIES_TEXT } from "@/lib/site";
 import { SERVICE_ROWS } from "@/lib/services";
+import { FEED_TITLE } from "@/lib/feed";
 
 // Brand-first titles, like estrela.studio: "Skorbit Labs | About Us". The home page gets the keyword line.
 export const TITLE_TEMPLATE = `${SITE_NAME} | %s`;
@@ -17,7 +18,7 @@ export function pageMeta({ title, description, path }: { title?: string; descrip
   return {
     ...(title && { title }),
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: path, types: { "application/rss+xml": [{ url: "/rss.xml", title: FEED_TITLE }] } },
     openGraph: { type: "website", siteName: SITE_NAME, locale: "en_US", url: path, title: fullTitle, description, images: [OG_IMAGE] },
     twitter: { card: "summary_large_image", title: fullTitle, description, images: [OG_IMAGE] },
   };

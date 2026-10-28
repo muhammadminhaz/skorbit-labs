@@ -3,6 +3,12 @@ export const SITE_NAME = "Skorbit Labs";
 export const CONTACT_EMAIL = "hello@skorbit-labs.com";
 
 export const SLOGAN = "Build products. Grow brands.";
+
+// Where the business is based, as stated in the Terms and Privacy Policy (governing law: Western Australia)
+export const HEAD_OFFICE = "Perth, Western Australia";
+export const BRANCH_OFFICE = "Shantinagar, Dhaka, Bangladesh";
+// Bump when the Terms, Privacy Policy or Standards change
+export const LEGAL_UPDATED = { iso: "2026-10-28", text: "28 October 2026" };
 // Countries the team works from, in TEAM order with duplicates dropped.
 export const TEAM_COUNTRIES_TEXT = "Saudi Arabia, Australia and Bangladesh";
 

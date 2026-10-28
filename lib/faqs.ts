@@ -28,6 +28,11 @@ export const FAQS = [
     q: "Can you improve a product we already have?",
     a: "Yes. We start with an audit of the code, design and analytics, then fix what is actually holding it back before adding anything new.",
   },
+  {
+    // Summary of app/standards/page.tsx; keep the two in step
+    q: "Is there any work you don't take on?",
+    a: "Yes. Guided by our faith and values, we don't create AI-generated images or videos of people, immodest imagery, or content with music, and we don't work on gambling, alcohol, tobacco or drugs, interest-based lending, adult or dating services, or anything deceptive or harmful. Our Standards page has the details.",
+  },
 ];
 
 // Google wants one FAQPage per site for repeated FAQs, so only the home page renders this

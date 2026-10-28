@@ -13,6 +13,12 @@ const PAGES = [
   { name: "Contact", href: "/contact" },
 ];
 
+const LEGAL = [
+  { name: "Our standards", href: "/standards" },
+  { name: "Terms", href: "/terms" },
+  { name: "Privacy", href: "/privacy" },
+];
+
 export default function Footer() {
   return (
     <footer className="relative border-t border-white/10">
@@ -65,6 +71,17 @@ export default function Footer() {
 
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-2 border-t border-white/10 px-6 py-6 text-sm text-white/40 md:flex-row md:px-12">
           <span>© {new Date().getFullYear()} Skorbit Labs. All rights reserved.</span>
+          <nav aria-label="Legal">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              {LEGAL.map((page) => (
+                <li key={page.href}>
+                  <Link href={page.href} className="transition-colors hover:text-[#7ee3ff]">{page.name}</Link>
+                </li>
+              ))}
+              {/* A feed, not a page: plain <a> so Next doesn't try to prefetch it as a route */}
+              <li><a href="/rss.xml" className="transition-colors hover:text-[#7ee3ff]">RSS</a></li>
+            </ul>
+          </nav>
           <span>Built with intention, clarity and care.</span>
         </div>
       </div>

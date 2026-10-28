@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check, Mail, Send } from "lucide-react";
@@ -170,7 +171,10 @@ export default function Contact({ asPage = false }: { asPage?: boolean }) {
               </div>
 
               <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-white/40">We reply within one business day.</p>
+                <p className="text-sm text-white/40">
+                  We reply within one business day. Please check{" "}
+                  <Link href="/standards" className="text-white/60 underline underline-offset-4 transition-colors hover:text-[#7ee3ff]">the work we take on</Link>.
+                </p>
                 <CtaLink icon={Send}>Send request</CtaLink>
               </div>
             </form>
