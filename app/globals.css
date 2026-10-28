@@ -127,8 +127,10 @@ html, body {
 }
 
 /* ---------- Hero entrance (components/sections/Hero.tsx) ---------- */
-/* Pure CSS so the copy paints before JavaScript loads; --rise-delay staggers the words */
-.hero-rise { animation: hero-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--rise-delay, 0s) both; }
+/* Pure CSS so the copy paints before JavaScript loads; --rise-delay staggers the words.
+   `backwards`, not `both`: holding the end state would leave filter: blur(0px) on the wrapper, which stops the
+   service strip's backdrop-blur (inside it) from seeing the shader behind, so the frosted glass would turn clear. */
+.hero-rise { animation: hero-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--rise-delay, 0s) backwards; }
 @keyframes hero-rise { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } }
 @keyframes hero-fade { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
