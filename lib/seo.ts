@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CONTACT_EMAIL, SITE_NAME, SITE_URL, SLOGAN, TEAM, TEAM_COUNTRIES_TEXT } from "@/lib/site";
+import { CONTACT_EMAIL, OFFICES, SITE_NAME, SITE_URL, SLOGAN, TEAM } from "@/lib/site";
 import { SERVICE_ROWS } from "@/lib/services";
 import { FEED_TITLE } from "@/lib/feed";
 
@@ -24,6 +24,13 @@ export function pageMeta({ title, description, path }: { title?: string; descrip
   };
 }
 
+const postalAddress = (o: (typeof OFFICES)[keyof typeof OFFICES]) => ({
+  "@type": "PostalAddress",
+  addressLocality: o.locality,
+  addressRegion: o.region,
+  addressCountry: o.country,
+});
+
 export const ORGANIZATION = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
@@ -36,8 +43,9 @@ export const ORGANIZATION = {
   email: CONTACT_EMAIL,
   description: DEFAULT_DESCRIPTION,
   areaServed: "Worldwide",
-  // Distributed team: say where people are without claiming offices
-  location: `${SITE_NAME} works remotely from ${TEAM_COUNTRIES_TEXT}`,
+  // Registered in Perth (the address), with a branch in Dhaka; both listed as locations
+  address: postalAddress(OFFICES.head),
+  location: [OFFICES.head, OFFICES.branch].map((o) => ({ "@type": "Place", name: o.name, address: postalAddress(o) })),
   employee: TEAM.map((m) => ({
     "@type": "Person",
     name: m.name,

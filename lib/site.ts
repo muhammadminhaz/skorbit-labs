@@ -4,7 +4,12 @@ export const CONTACT_EMAIL = "hello@skorbit-labs.com";
 
 export const SLOGAN = "Build products. Grow brands.";
 
-// Where the business is based, as stated in the Terms and Privacy Policy (governing law: Western Australia)
+// Where the business is based: prose for the Terms and Privacy Policy (governing law: Western Australia),
+// fields for the Organization JSON-LD. Add streetAddress/postalCode here if the offices publish them.
+export const OFFICES = {
+  head: { name: `${SITE_NAME}, Perth`, locality: "Perth", region: "WA", country: "AU" },
+  branch: { name: `${SITE_NAME}, Dhaka`, locality: "Shantinagar, Dhaka", region: "Dhaka", country: "BD" },
+};
 export const HEAD_OFFICE = "Perth, Western Australia";
 export const BRANCH_OFFICE = "Shantinagar, Dhaka, Bangladesh";
 // Bump when the Terms, Privacy Policy or Standards change
