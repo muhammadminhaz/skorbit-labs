@@ -52,7 +52,7 @@ npm run build && npm start
 - `FAQ`'s "Contact us" link points to `#contact` on `/` and `/contact`, and to `/contact` elsewhere.
 
 ## SEO
-Set up for a global, English-speaking market on `https://skorbit-labs.com` (`SITE_URL` in `lib/site.ts`).
+Set up for a global, English-speaking market on `https://www.skorbit-labs.com` (the primary domain on Vercel; the apex redirects to it) (`SITE_URL` in `lib/site.ts`).
 - `app/layout.tsx`: `metadataBase`, a title template (`%s | Skorbit Labs`), default description, keywords, robots (index, large image previews), theme color, and Organization (`ProfessionalService`, `areaServed: Worldwide`) plus WebSite JSON-LD.
 - `lib/seo.ts`: `pageMeta({ title, description, path })` gives every page its title, description, canonical URL, Open Graph and Twitter card (with the share image restated, since a page's `openGraph` replaces the layout's). Titles are kept under about 60 characters and descriptions under about 160. Branding follows estrela.studio: brand first in every title (`Skorbit Labs | About Us`, template in `TITLE_TEMPLATE`), the home page gets the keyword line (`Skorbit Labs | Websites, Apps, AI and Digital Growth`), and every description names the brand and ends on "businesses worldwide". The Organization JSON-LD carries the slogan, `areaServed: Worldwide`, the founder and each team member with their country.
 - `app/opengraph-image.jpg` (+ `.alt.txt`): the 1200x630 share cover ("Build products. Grow brands."), a JPEG of about 100 KB since WhatsApp skips preview images over ~300 KB. `pageMeta` also names it explicitly, since a page's own `openGraph` drops the inherited file image.

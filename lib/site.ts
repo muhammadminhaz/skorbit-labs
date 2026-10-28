@@ -1,4 +1,4 @@
-export const SITE_URL = "https://skorbit-labs.com";
+export const SITE_URL = "https://www.skorbit-labs.com";
 export const SITE_NAME = "Skorbit Labs";
 export const CONTACT_EMAIL = "hello@skorbit-labs.com";
 
