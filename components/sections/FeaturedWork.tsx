@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useMotionTemplate, useMotionValue, useReducedMotion } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useReducedMotion, type MotionStyle } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import CtaLink from "@/components/CtaLink";
 import { motionTokens } from "@/components/arc/motion-tokens";
@@ -82,17 +82,19 @@ function ProjectCard({ project, index, hoveredId, setHoveredId }: {
               sizes="(min-width: 1344px) 576px, (min-width: 768px) calc(50vw - 96px), calc(100vw - 80px)"
               className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
             />
+            {/* The spotlight follows a mouse, so the dashboard image is only applied (and downloaded) on fine pointers;
+                phones never fetch it */}
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300"
+              className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300 pointer-fine:bg-(image:--reveal)"
               style={{
-                backgroundImage: `url(${project.revealImage})`,
+                "--reveal": `url(${project.revealImage})`,
                 backgroundSize: "cover",
                 backgroundPosition: "top center",
                 maskImage: mask,
                 WebkitMaskImage: mask,
                 opacity: isHovered ? 1 : 0,
-              }}
+              } as MotionStyle}
             />
           </>
         ) : (
